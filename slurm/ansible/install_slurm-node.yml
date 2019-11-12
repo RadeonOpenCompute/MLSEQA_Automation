@@ -1,4 +1,9 @@
 ---
+#- hosts: localhost
+#  tasks:
+#  - name: copy latest munge key to node folder
+
+
 - hosts: slurm-node
     hosts1:10.130.166.205
   #vars:
@@ -40,6 +45,13 @@
     become: yes
     become_method: sudo
 
+  
+    #- name: copy file from local host to remote host (relative path, ./files/)
+    #copy:
+    #src: /etc/munge/munge.key
+    #dest: $HOME/test_file
+  
+  
   - name: copy munge key file to host
     copy:
       src: files/etc/munge/munge-new.key
