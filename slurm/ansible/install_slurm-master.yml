@@ -1,5 +1,5 @@
 ---
-- hosts: slurm_node
+- hosts: localhost
   #hosts1:10.130.166.205
   #vars:
   #ansible_ssh_user='ansible'
@@ -154,7 +154,7 @@
 
             #- "wget https://download.schedmd.com/slurm/{{ slurm_version }}.tar.bz2"
             #- "sudo tar xvjf {{ slurm_version }}.tar.bz2"
-       - "wget http://10.130.166.180:8081/artifactory/slurm_amd_plgn_package/amd-plugin-mike-wip-v1.tar.gz"
+       - "wget http://10.130.166.15:8081/artifactory/slurm_amd_plgn_package/amd-plugin-mike-wip-v1.tar.gz"
        - "tar xvzf amd-plugin-mike-wip-v1.tar.gz"
     become: yes
     become_method: sudo
@@ -257,6 +257,9 @@
        - "sacctmgr add cluster compute-cluster"
        - "sacctmgr add account compute-account description='Compute accounts' Organization=OurOrg"
        - "sacctmgr create user myuser account=compute-account adminlevel=None"
+    ignore_errors: yes
+    async: 35
+    poll: 10
     become: yes
     become_method: sudo
 
@@ -265,7 +268,7 @@
       dest: /etc/slurm/slurm.conf
       state: present
       regexp: '^ControlMachine='
-      line: 'ControlMachine=slurm-master'
+      line: 'ControlMachine=ROCM-REL-MGPU'
     become: yes
     become_method: sudo
 
@@ -293,6 +296,13 @@
       state: present
       regexp: '^FastSchedule=1'
       line: 'FastSchedule=2'
+    become: yes
+    become_method: sudo
+
+  - name: start service slurmdbd
+    systemd:
+      state: started
+      name: slurmdbd
     become: yes
     become_method: sudo
 
