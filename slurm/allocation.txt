@@ -1,0 +1,2 @@
+salloc: Granted job allocation 391
+salloc: Job 391 has exceeded its time limit and its allocation has been revoked.
