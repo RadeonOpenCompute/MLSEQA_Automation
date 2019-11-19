@@ -29,27 +29,13 @@ def Auto_mail(htmlfile, subject, textpath):
     </style>
     </head>
     """
-    #msg.attach(MIMEText(body, 'plain')
+ 
     try:
-        #for filename in Attachments:
-        #if filename in htmlfile:
-        #with open(path+'/'+filename,'r') as readfile:
         with open(htmlfile, 'r') as readfile:
             body= body+readfile.read()
 
             msg.attach(MIMEText(body, 'html'))
-            #continue
-
-
-            #attachment = open(path+'/'+filename,'rb')
-
-            #filename = "hip_directed_summary.txt"
-            #f = file(filename)
-            #attachment = MIMEText(f.read())
-            #attachment.add_header('Content-Disposition', 'attachment', filename=filename)
-            #msg.attach(attachment)
-
-
+           
             filename = re.split("/", textpath)
             filename.reverse()
             attachment = open(textpath,'rb')
