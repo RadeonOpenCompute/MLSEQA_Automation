@@ -3,18 +3,19 @@ import os, sys, re, itertools
 from automailer import *
 #from qa_testapi import *
 from datetime import datetime
-      
+from artifactory import ArtifactoryPath
+
 start=datetime.now()
 
 if len(sys.argv) != 2:
     print("Please make sure you have entered one arguments")
     sys.exit(1)
 
-#ocl_logpath = r"/home/taccuser/2.5/bin/ocltst/ocltest.log"
+
 
 test_path = "%s" %sys.argv[1]
 ocl_logs=[test_path +'/oclruntime.log', test_path +'/oclregression.log', test_path +'/oclcompiler.log', test_path +'/oclprofiler.log', test_path +'/ocldebugger.log', test_path +'/oclfrontend.log',test_path +'/oclmediafunc.log', test_path +'/oclperf.log']
-summary_files = ['/home/taccuser/MLSEQA_Automation/rocm_components/mail/ocl_summary.html', '/home/taccuser/MLSEQA_Automation/rocm_components/mail/ocl_summary.txt']
+summary_files = ['/home/taccuser/MLSEQA_Automation/rocm_components/mail/ocl_summary.html', '/home/taccuser/MLSEQA_Automation/rocm_components/mail/ocl_summary.txt', '/home/taccuser/MLSEQA_Automation/rocm_components/mail/ocl.log']
 
 regex=r'.*?Passed Tests:.*$'
 regex1=r'.*?Failed Tests:.*$'
@@ -71,8 +72,7 @@ def hip_summary_print(summary, value, mode):
         txtfile.write(value.get_string())
         txtfile.write("\n")
 
-#pre_requisite()
-#sysinfo = pre_requisite()
+
 
 
 def ocl_run_tests():
@@ -90,8 +90,25 @@ def ocl_run_tests():
 
     #hip_summary_print("System Info", sysinfo, mode='w')
 
+def upload_aritifactory():
+
+    artifactory_path = "http://10.130.166.15:8081/artifactory/qa_local_logpath/ocl"
+    mail_dir = "/home/taccuser/MLSEQA_Automation/rocm_components/mail/"
+    currentDT = datetime.now()
+    artifactory_path=artifactory_path+currentDT.strftime("%Y-%m-%d_%H:%M")
+    path = ArtifactoryPath(artifactory_path,auth=('rocmqa','AH64_uh1'))
+    path.mkdir()
+    List=os.listdir(mail_dir)
+    for i in List:
+        if i.endswith('.html'):
+            continue
+        path.deploy_file(mail_dir+'/'+i)
+    print ("Succesfully Uploaded in to Artifactory")
+        
+        
+
 ocl_run_tests()
 print(get_ocltest_info())
-
 print ('Total ExecutionTime: ',datetime.now()-start)
-Auto_mail(summary_files[0], "OCL", summary_files[1])
+Auto_mail(summary_files[0], "OCL", summary_files[2])
+upload_aritifactory()

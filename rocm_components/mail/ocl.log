@@ -1,0 +1,236 @@
+
+Compute Device info:
+	Platform Version: OpenCL 2.1 AMD-APP (2982.0)
+	Device Name: gfx803
+	Vendor: Advanced Micro Devices, Inc.
+	Device Version: OpenCL 1.2 
+	Driver Version: 2982.0 (HSA1.1,LC)
+	Board Name: Fiji [Radeon R9 FURY / NANO Series]
+	Device Topology: PCI[ B#1, D#0, F#0]
+
+-------------------------------------------------
+The OpenCL Testing Module oclruntime Version = 0 
+------------------------------
+OCLCreateContext[  0]            PASSED: GPU[0] T[0] [  0],      0.000
+Atomic counter extension is required for this test!
+OCLAtomicCounter[  0]            PASSED: GPU[0] T[0] [  0],      0.000
+OCLKernelBinary[  0]             PASSED: GPU[0] T[0] [  0],      0.000
+OCLKernelBinary[  1]             PASSED: GPU[0] T[0] [  1],      0.000
+OCLGlobalOffset[  0]             PASSED: GPU[0] T[0] [  0],      0.000
+OCLLinearFilter[  0]             PASSED: GPU[0] T[0] [  0],      0.000
+OCLLinearFilter[  1]             PASSED: GPU[0] T[0] [  1],      0.000
+OCLAsyncTransfer[  0]            Time: 1.10 sec, BW: 3.91 GB/s    PASSED: GPU[0] T[0] [  0],      0.000
+OCLLDS32K[  0]                   PASSED: GPU[0] T[0] [  0],      0.000
+OCLMemObjs[  0]                  PASSED: GPU[0] T[0] [  0],      0.000
+Semaphore extension is required for this test!
+OCLSemaphore[  0]                PASSED: GPU[0] T[0] [  0],      0.000
+OCLPartialWrkgrp[  0]            PASSED: GPU[0] T[0] [  0],      0.000
+OCLPartialWrkgrp[  1]            PASSED: GPU[0] T[0] [  1],      0.000
+OCLCreateBuffer[  0]            Max single alloc (size of 3650722201 bytes) Max single read/write (size of 3650722201 bytes) create time (ms): PASSED: GPU[0] T[0] [  0],   5741.144
+OCLCreateImage[  0]              (2048, 2048,  54)  3456 MB PASSED: GPU[0] T[0] [  0],      0.000
+OCLCreateImage[  1]              (16368, 6970,  0)  1740 MB PASSED: GPU[0] T[0] [  1],      0.000
+OCLCreateImage[  2]              (4, 4,  4)   1024 Bytes PASSED: GPU[0] T[0] [  2],      0.000
+OCLCreateImage[  3]              (4, 4,  0)    256 Bytes PASSED: GPU[0] T[0] [  3],      0.000
+OCLCreateImage[  4]              (4, 0,  0)     64 Bytes PASSED: GPU[0] T[0] [  4],      0.000
+OCLMapCount[  0]                 PASSED: GPU[0] T[0] [  0],      0.000
+OCLMemoryInfo[  0]               PASSED: GPU[0] T[0] [  0],      0.000
+OCLMemoryInfo[  1]               PASSED: GPU[0] T[0] [  1],      0.000
+Building on gfx803, OpenCL version 1.2, (options '')
+Building on gfx803, OpenCL version 1.2, (options '')
+OCLOfflineCompilation[  0]       PASSED: GPU[0] T[0] [  0],      0.000
+OCLMemDependency[  0]            PASSED: GPU[0] T[0] [  0],      0.000
+OCLGetQueueThreadID[  0]         PASSED: GPU[0] T[0] [  0],      0.000
+OCLDeviceQueries[  0]            PASSED: GPU[0] T[0] [  0],      0.000
+
+Silent Failure: cl_amd_bus_addressable_memory extension is not enabled on GPU 0
+OCLSDI[  0]                      PASSED: GPU[0] T[0] [  0],      0.000
+
+Silent Failure: cl_amd_bus_addressable_memory extension is not enabled on GPU 0
+OCLSDI[  1]                      PASSED: GPU[0] T[0] [  1],      0.000
+
+Silent Failure: cl_amd_bus_addressable_memory extension is not enabled on GPU 0
+OCLSDI[  2]                      PASSED: GPU[0] T[0] [  2],      0.000
+
+Silent Failure: cl_amd_bus_addressable_memory extension is not enabled on GPU 0
+OCLSDI[  3]                      PASSED: GPU[0] T[0] [  3],      0.000
+
+Silent Failure: cl_amd_bus_addressable_memory extension is not enabled on GPU 0
+OCLSDI[  4]                      PASSED: GPU[0] T[0] [  4],      0.000
+
+Silent Failure: cl_amd_bus_addressable_memory extension is not enabled on GPU 0
+OCLSDI[  5]                      PASSED: GPU[0] T[0] [  5],      0.000
+
+Silent Failure: cl_amd_bus_addressable_memory extension is not enabled on GPU 0
+OCLSDI[  6]                      PASSED: GPU[0] T[0] [  6],      0.000
+
+Silent Failure: cl_amd_bus_addressable_memory extension is not enabled on GPU 0
+OCLSDI[  7]                      PASSED: GPU[0] T[0] [  7],      0.000
+
+Silent Failure: cl_amd_bus_addressable_memory extension is not enabled on GPU 0
+OCLSDI[  8]                      PASSED: GPU[0] T[0] [  8],      0.000
+
+Silent Failure: cl_amd_bus_addressable_memory extension is not enabled on GPU 0
+OCLSDI[  9]                      PASSED: GPU[0] T[0] [  9],      0.000
+
+Silent Failure: cl_amd_bus_addressable_memory extension is not enabled on GPU 0
+OCLSDI[ 10]                      PASSED: GPU[0] T[0] [ 10],      0.000
+
+Silent Failure: cl_amd_bus_addressable_memory extension is not enabled on GPU 0
+OCLSDI[ 11]                      PASSED: GPU[0] T[0] [ 11],      0.000
+OCLThreadTrace[  0]             Not supported PASSED: GPU[0] T[0] [  0],      0.000
+OCLMultiQueue[  0]              Num Queues: 1, Executions Per Queue: 16384, Time: 1.16 seconds PASSED: GPU[0] T[0] [  0],      0.000
+OCLMultiQueue[  1]              Num Queues: 2, Executions Per Queue:  8192, Time: 0.679 seconds PASSED: GPU[0] T[0] [  1],      0.000
+OCLMultiQueue[  2]              Num Queues: 4, Executions Per Queue:  4096, Time: 0.701 seconds PASSED: GPU[0] T[0] [  2],      0.000
+OCLMultiQueue[  3]              Num Queues: 8, Executions Per Queue:  2048, Time: 0.705 seconds PASSED: GPU[0] T[0] [  3],      0.000
+1 warning generated.
+OCLImage2DFromBuffer[  0]        PASSED: GPU[0] T[0] [  0],      0.000
+1 warning generated.
+OCLImage2DFromBuffer[  1]        PASSED: GPU[0] T[0] [  1],      0.000
+1 warning generated.
+OCLImage2DFromBuffer[  2]        PASSED: GPU[0] T[0] [  2],      0.000
+1 warning generated.
+OCLImage2DFromBuffer[  3]        PASSED: GPU[0] T[0] [  3],      0.000
+1 warning generated.
+OCLImage2DFromBuffer[  4]        PASSED: GPU[0] T[0] [  4],      0.000
+1 warning generated.
+OCLImage2DFromBuffer[  5]        PASSED: GPU[0] T[0] [  5],      0.000
+1 warning generated.
+OCLBufferFromImage[  0]         clCreateBufferFromImageAMD not supported on this device!
+ PASSED: GPU[0] T[0] [  0],      0.000
+1 warning generated.
+OCLBufferFromImage[  1]         clCreateBufferFromImageAMD not supported on this device!
+ PASSED: GPU[0] T[0] [  1],      0.000
+OCLPerfCounters[  0]            SQ Number of Waves: 1364   PASSED: GPU[0] T[0] [  0],      0.000
+OCLPerfCounters[  1]            GRBM CP Busy: 1890012   PASSED: GPU[0] T[0] [  1],      0.000
+OCLSVM[  0]                      PASSED: GPU[0] T[0] [  0],      0.000
+OCLSVM[  1]                     Device does not support fined-grained system sharing, skipping test...
+ PASSED: GPU[0] T[0] [  1],      0.000
+OCLSVM[  2]                      PASSED: GPU[0] T[0] [  2],      0.000
+1 warning generated.
+OCLSVM[  3]                     Device does not support fined-grained system sharing, skipping test...
+ PASSED: GPU[0] T[0] [  3],      0.000
+OCLSVM[  4]                     SVM atomics not supported, skipping test...
+ PASSED: GPU[0] T[0] [  4],      0.000
+OCLSVM[  5]                      PASSED: GPU[0] T[0] [  5],      0.000
+OCLSVM[  6]                      PASSED: GPU[0] T[0] [  6],      0.000
+OCLSVM[  7]                      PASSED: GPU[0] T[0] [  7],      0.000
+OCLSVM[  8]                      PASSED: GPU[0] T[0] [  8],      0.000
+OCLProgramScopeVariables[  0]    PASSED: GPU[0] T[0] [  0],      0.000
+OCLProgramScopeVariables[  1]    PASSED: GPU[0] T[0] [  1],      0.000
+OCLProgramScopeVariables[  2]    PASSED: GPU[0] T[0] [  2],      0.000
+OCLGenericAddressSpace[  0]      PASSED: GPU[0] T[0] [  0],      0.000
+OCLGenericAddressSpace[  1]      PASSED: GPU[0] T[0] [  1],      0.000
+OCLGenericAddressSpace[  2]      PASSED: GPU[0] T[0] [  2],      0.000
+OCLGenericAddressSpace[  3]      PASSED: GPU[0] T[0] [  3],      0.000
+OCLGenericAddressSpace[  4]     6 warnings generated.
+ PASSED: GPU[0] T[0] [  4],      0.000
+OCLGenericAddressSpace[  5]     6 warnings generated.
+ PASSED: GPU[0] T[0] [  5],      0.000
+OCLGenericAddressSpace[  6]     3 warnings generated.
+ PASSED: GPU[0] T[0] [  6],      0.000
+OCLDynamic[  0]                  PASSED: GPU[0] T[0] [  0],      0.000
+OCLDynamic[  1]                  PASSED: GPU[0] T[0] [  1],      0.000
+OCLPlatformAtomics[  0]          PASSED: GPU[0] T[0] [  0],      0.000
+OCLDeviceAtomic[  0]             PASSED: GPU[0] T[0] [  0],      0.000
+OCLDeviceAtomic[  1]             PASSED: GPU[0] T[0] [  1],      0.000
+OCLDynamicBLines[  0]            PASSED: GPU[0] T[0] [  0],      0.000
+OCLUnalignedCopy[  0]            PASSED: GPU[0] T[0] [  0],      0.000
+OCLBlitKernel[  0]              Currently it works for OCL20 devices only!
+ PASSED: GPU[0] T[0] [  0],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[  0]              PASSED: GPU[0] T[0] [  0],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[  1]              PASSED: GPU[0] T[0] [  1],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[  2]              PASSED: GPU[0] T[0] [  2],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[  3]              PASSED: GPU[0] T[0] [  3],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[  4]              PASSED: GPU[0] T[0] [  4],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[  5]              PASSED: GPU[0] T[0] [  5],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[  6]              PASSED: GPU[0] T[0] [  6],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[  7]              PASSED: GPU[0] T[0] [  7],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[  8]              PASSED: GPU[0] T[0] [  8],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[  9]              PASSED: GPU[0] T[0] [  9],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[ 10]              PASSED: GPU[0] T[0] [ 10],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[ 11]              PASSED: GPU[0] T[0] [ 11],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[ 12]              PASSED: GPU[0] T[0] [ 12],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[ 13]              PASSED: GPU[0] T[0] [ 13],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[ 14]              PASSED: GPU[0] T[0] [ 14],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[ 15]              PASSED: GPU[0] T[0] [ 15],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[ 16]              PASSED: GPU[0] T[0] [ 16],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[ 17]              PASSED: GPU[0] T[0] [ 17],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[ 18]              PASSED: GPU[0] T[0] [ 18],      0.000
+Liquid flash extension is required for this test!
+OCLLiquidFlash[ 19]              PASSED: GPU[0] T[0] [ 19],      0.000
+OCLRTQueue[  0]                  PASSED: GPU[0] T[0] [  0],      0.000
+OCLRTQueue[  1]                  PASSED: GPU[0] T[0] [  1],      0.000
+OCLAsyncMap[  0]                 PASSED: GPU[0] T[0] [  0],      0.000
+OCLPinnedMemory[  0]             PASSED: GPU[0] T[0] [  0],      0.000
+OCLPinnedMemory[  1]             PASSED: GPU[0] T[0] [  1],      0.000
+OCLReadWriteImage[  0]           PASSED: GPU[0] T[0] [  0],      0.000
+OCLReadWriteImage[  1]           PASSED: GPU[0] T[0] [  1],      0.000
+OCLReadWriteImage[  2]           PASSED: GPU[0] T[0] [  2],      0.000
+OCLReadWriteImage[  3]           PASSED: GPU[0] T[0] [  3],      0.000
+OCLStablePState[  0]             PASSED: GPU[0] T[0] [  0],      0.000                      (chksum 0xffffffff)
+OCLP2PBuffer[  0]               Write dev0->dev1 <P2P> ( 1 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [  0],      5.094
+OCLP2PBuffer[  1]               Write dev0->dev1 <P2P> ( 4 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [  1],      5.208
+OCLP2PBuffer[  2]               Write dev0->dev1 <P2P> (16 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [  2],      5.319
+OCLP2PBuffer[  3]               Write dev0->dev1 <P2P> (33 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [  3],      5.328
+OCLP2PBuffer[  4]               Write dev0->dev1 <P2P> (67 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [  4],      5.336
+OCLP2PBuffer[  5]               Write dev1->dev0 <P2P> ( 1 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [  5],      4.795
+OCLP2PBuffer[  6]               Write dev1->dev0 <P2P> ( 4 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [  6],      5.373
+OCLP2PBuffer[  7]               Write dev1->dev0 <P2P> (16 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [  7],      5.358
+OCLP2PBuffer[  8]               Write dev1->dev0 <P2P> (33 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [  8],      5.411
+OCLP2PBuffer[  9]               Write dev1->dev0 <P2P> (67 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [  9],      5.383
+OCLP2PBuffer[ 10]               Read  dev1<-dev0 <P2P> ( 1 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [ 10],      4.861
+OCLP2PBuffer[ 11]               Read  dev1<-dev0 <P2P> ( 4 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [ 11],      5.312
+OCLP2PBuffer[ 12]               Read  dev1<-dev0 <P2P> (16 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [ 12],      5.358
+OCLP2PBuffer[ 13]               Read  dev1<-dev0 <P2P> (33 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [ 13],      5.391
+OCLP2PBuffer[ 14]               Read  dev1<-dev0 <P2P> (67 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [ 14],      5.342
+OCLP2PBuffer[ 15]               Read  dev0<-dev1 <P2P> ( 1 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [ 15],      4.813
+OCLP2PBuffer[ 16]               Read  dev0<-dev1 <P2P> ( 4 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [ 16],      5.173
+OCLP2PBuffer[ 17]               Read  dev0<-dev1 <P2P> (16 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [ 17],      5.326
+OCLP2PBuffer[ 18]               Read  dev0<-dev1 <P2P> (33 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [ 18],      5.369
+OCLP2PBuffer[ 19]               Read  dev0<-dev1 <P2P> (67 MB ) transfer speed (GB/s): PASSED: GPU[0] T[0] [ 19],      5.395
+
+
+----------------------------------------
+Total Passed Tests:        40 (100.00%)
+Total Failed Tests:         0 (  0.00%)
+----------------------------------------
+Total Run Tests:           40 (100.00%)
+
+
+/home/taccuser/MLSEQA_Automation/rocm_components
++----------------+------------+-----------+-----------+
+| OCL Components | TotalTests | TotalPass | TotalFail |
++----------------+------------+-----------+-----------+
+|   oclruntime   |     40     |     40    |     0     |
+| oclregression  |     42     |     42    |     0     |
+|  oclcompiler   |     25     |     25    |     0     |
+|  oclprofiler   |     1      |     1     |     0     |
+|  ocldebugger   |     1      |     0     |     1     |
+|  oclfrontend   |     15     |     15    |     0     |
+|  oclmediafunc  |     1      |     1     |     0     |
+|    oclperf     |     51     |     51    |     0     |
++----------------+------------+-----------+-----------+
+Total ExecutionTime:  0:00:38.174920
+['Rahulgoud.Mula@amd.com', 'Rahulgoud.Mula@amd.com']
+Mail sent Successfully
+
+Succesfully Uploaded in to Artifactory
