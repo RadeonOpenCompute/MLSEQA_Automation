@@ -1,6 +1,5 @@
 import os, sys, re, itertools, subprocess, json, logging
 from subprocess import PIPE, run
-from prettytable import PrettyTable
 
 
 regex1=r'^LKG = .*$'
