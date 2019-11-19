@@ -32,7 +32,7 @@ def last_known_good():
 
 def download_lkg():
     print(last_known_good.var)
-    os.system("cd $HOME && wget -q -o /dev/null --user guest --password guest 'http://ocltc.amd.com:8111/repository/download/BuildsOpenCLHsaStaging_OpenCLLinuxPro_LinuxX8664ReleaseGfx9LinuxPro/%s:id/opencl/tests/ocltst.zip'" %last_known_good.var)
+    os.system("cd $HOME && wget -q -o /dev/null --user guest --password guest http://ocltc.amd.com:8111/repository/download/BuildsOpenCLHsaStaging_OpenCLLinuxPro_LinuxX8664ReleaseGfx9LinuxPro/{0}:id/opencl/tests/ocltst.zip".format(last_known_good.var))
     os.system("cd $HOME/ && pwd && unzip -o ocltst.zip")
     os.system("cd $HOME/ocltst/x86_64 && export LD_LIBRARY_PATH=$PWD")
 
