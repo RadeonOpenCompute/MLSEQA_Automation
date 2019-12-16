@@ -186,6 +186,7 @@ slurm_node_allocation(autodetect_singlenode_command)
 cancel_allocation()
 slurm_autonode_allocation()
 slurm_gpu_separation()
+cancel_allocation()
 print(x)
 print("For reference pls find the log file at ~/slurm.log") 
 
