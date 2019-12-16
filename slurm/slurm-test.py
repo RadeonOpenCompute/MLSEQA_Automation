@@ -63,9 +63,9 @@ def slurm_node_setup():
 
 def slurm_gpu_detect():
     nodename = slurm_load_conf("N1hostname")    
-    res=os.popen("srun -w %s /opt/rocm/bin/rocm_agent_enumerator" %nodename).read()    
+    node_gpu_devices = int(slurm_load_conf("N1cards"))
+    res=os.popen("srun -w %s --gres=gpu:%s /opt/rocm/bin/rocm_agent_enumerator" %(nodename,node_gpu_devices)).read()    
     slurm_gpu_detected =  int(res.count("gfx") -1)
-    node_gpu_devices = int(slurm_load_conf("N1cards"))    
     if (node_gpu_devices == slurm_gpu_detected):
         x.add_row(["Total No.of Gpu vs Slurm No.of Gpu detecting", "Pass"])
         result = 'Successful !!'        
