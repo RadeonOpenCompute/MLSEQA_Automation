@@ -1,8 +1,14 @@
-import os, sys, re, itertools, subprocess, docker, tempfile
+import os, sys, re, itertools, subprocess, docker, tempfile, shutil
 from subprocess import PIPE, run, call
 HOME = os.environ['HOME']
 dockerpath = HOME + "/sing-dockerbuild"
 
+
+def clean_log():    
+    if os.path.isdir(dockerpath):
+        shutil.rmtree(dockerpath)
+    else:
+        print("Can not delete the folder as it doesn't exists")
 
 
 def get_rocmdock():
@@ -37,5 +43,5 @@ def exec_rocmdock():
         print("[-] Error running command %s" %(str(e)))
 
 
-
+clean_log()
 exec_rocmdock()
