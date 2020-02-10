@@ -3,7 +3,7 @@ from subprocess import PIPE, run
 from prettytable import PrettyTable
 
 
-conf_path="/home/taccuser/slurm-automation/conf.json"
+conf_path="./conf.json"
 autodetect_singlenode_command="salloc -N 1 --gres=gpu:1 --begin=now --time=10"
 node_cancel_regex=r'.*?Granted.*$'
 x = PrettyTable()
@@ -12,7 +12,7 @@ logging.basicConfig(filename="/home/taccuser/slurm.log", format='%(asctime)s %(m
 logger=logging.getLogger()
 logger.setLevel(logging.DEBUG)
 logfile = open("/home/taccuser/slurm.log",'w')
-
+allocation_file = "./allocation.txt"
 
 
 def slurm_load_conf(var):
@@ -78,7 +78,7 @@ def slurm_gpu_detect():
 
 
 def cancel_allocation():
-    with open("/home/taccuser/slurm-automation/allocation.txt", "r") as file:        
+    with open(allocation_file, "r") as file:        
     #with open(slurm_load_conf("allocation_log"), "r") as file:
         for line in file:
             for match in re.finditer(node_cancel_regex, line, re.S):
@@ -92,12 +92,12 @@ def cancel_allocation():
 
 def validate_output():    
     try:        
-        with open("/home/taccuser/slurm-automation/allocation.txt", "r") as file:
+        with open(allocation_file, "r") as file:
         #with open(slurm_load_conf("node_cancel_regex"), "r") as file:        
             if "error" in file.read():           
                 x.add_row(["Slurm node allocation with GPU auto detect", "Fail"])
                 result='Failed !'                                                                    
-                f = open('/home/taccuser/slurm-automation/allocation.txt', 'r')
+                f = open(allocation_file, 'r')
                 contents = f.read()
                 print(contents)
                 logfile.write('\n\n Encountered Error:\n' + contents )
