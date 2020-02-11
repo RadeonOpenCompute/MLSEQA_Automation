@@ -154,7 +154,7 @@
 
             #- "wget https://download.schedmd.com/slurm/{{ slurm_version }}.tar.bz2"
             #- "sudo tar xvjf {{ slurm_version }}.tar.bz2"
-       - "wget http://10.130.166.15:8081/artifactory/slurm_amd_plgn_package/amd-plugin-mike-wip-v1.tar.gz"
+       - "wget http://10.128.142.190:8081/artifactory/slurm_amd_plgn_package/amd-plugin-mike-wip-v1.tar.gz"
        - "tar xvzf amd-plugin-mike-wip-v1.tar.gz"
     become: yes
     become_method: sudo
