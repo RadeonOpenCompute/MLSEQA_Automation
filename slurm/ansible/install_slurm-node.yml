@@ -103,7 +103,7 @@
   
   - name: copy munge key file to host
     copy:
-      src: files/etc/munge/munge-new.key
+      src: /etc/munge/munge.key
       dest: /etc/munge/munge.key
       owner: munge
       group: munge
