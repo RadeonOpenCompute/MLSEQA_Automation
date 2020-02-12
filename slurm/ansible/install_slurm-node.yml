@@ -3,6 +3,58 @@
 #  tasks:
 #  - name: copy latest munge key to node folder
 
+- hosts: localhost
+  
+  vars_files:
+    - ./vars.yml
+  
+  tasks:
+  - name: change munge folder as insecure
+    file:
+      path: /etc/munge
+      owner: "{{ superuser }}"
+      group: "{{ superuser }}"
+      mode: '0755'
+    become: yes
+    become_method: sudo
+
+  - name: change munge.key file as insecure
+    file:
+      path: /etc/munge/munge.key
+      owner: "{{ superuser }}"
+      group: "{{ superuser }}"
+      mode: '0755'
+    become: yes
+    become_method: sudo
+
+  - name: copy latest munge key to node folder
+    copy: 
+      src: /etc/munge/munge.key
+      dest: /home/taccuser/MLSEQA_Automation/slurm/ansible/files/etc/munge/
+      owner: "{{ superuser }}"
+      group: "{{ superuser }}"
+      mode: '0755'
+    become: yes
+    become_method: sudo
+
+ 
+  - name: change munge folder as secure
+    file:
+      path: /etc/munge
+      owner: "{{ mungeuser }}"
+      group: "{{ mungeuser }}"
+      mode: '0755'
+    become: yes
+    become_method: sudo
+
+  - name: change munge.key file as secure
+    file:
+      path: /etc/munge/munge.key
+      owner: "{{ mungeuser }}"
+      group: "{{ mungeuser }}"
+      mode: '0400'
+    become: yes
+    become_method: sudo
 
 - hosts: slurm-node
     hosts1:10.130.166.205
