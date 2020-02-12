@@ -5,3 +5,4 @@ tools: git,gcc,make,ruby,ruby-dev,libpam0g-dev,libmariadb-client-lgpl-dev,libmys
 slurm_version: slurm-19.05.0
 DB_root_password: root
 slurm_mysql_password: slurmdbpass
+mungeuser: munge
