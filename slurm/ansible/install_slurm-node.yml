@@ -24,34 +24,62 @@
     become: yes
     become_method: sudo
 
-  - name: copy latest munge key to node folder
-    copy: 
-      src: /etc/munge/munge.key
-      dest: /home/taccuser/MLSEQA_Automation/slurm/ansible/files/etc/munge/
-      owner: "{{ superuser }}"
-      group: "{{ superuser }}"
-      mode: '0755'
+    
+
+  - name: fetch the IP
+    shell: "hostname -I | awk '{print $1}'"
+    register: ipinfo
     become: yes
     become_method: sudo
+
+  - name: Test for line
+    shell: cat ./vars.yml | grep ip | wc -l
+    register: test_grep
+    become: yes
+    become_method: sudo
+
+  - name: add ip in vars.yml
+    lineinfile:
+      dest: ./vars.yml
+      line: 'ip: {{ ipinfo.stdout }}'
+    when: test_grep.stdout == "0"
+    become: yes
+    become_method: sudo
+
+  - name: fetch the hostname
+    shell: "hostname"
+    register: hostinfo
+    become: yes
+    become_method: sudo
+
+
+  - name: Test for line
+    shell: cat ./vars.yml | grep hostname | wc -l
+    register: test_grep1
+    become: yes
+    become_method: sudo
+
+
+  - name: add ip in vars.yml
+    lineinfile:
+      dest: ./vars.yml
+      line: 'hostname: {{ hostinfo.stdout }}'
+    when: test_grep1.stdout == "0"
+    become: yes
+    become_method: sudo
+
+
+    #- name: copy latest munge key to node folder
+    #copy: 
+    #src: /etc/munge/munge.key
+    #dest: /home/taccuser/MLSEQA_Automation/slurm/ansible/files/etc/munge/
+    #owner: "{{ superuser }}"
+    #group: "{{ superuser }}"
+    #mode: '0755'
+    #become: yes
+    #become_method: sudo
 
  
-  - name: change munge folder as secure
-    file:
-      path: /etc/munge
-      owner: "{{ mungeuser }}"
-      group: "{{ mungeuser }}"
-      mode: '0755'
-    become: yes
-    become_method: sudo
-
-  - name: change munge.key file as secure
-    file:
-      path: /etc/munge/munge.key
-      owner: "{{ mungeuser }}"
-      group: "{{ mungeuser }}"
-      mode: '0400'
-    become: yes
-    become_method: sudo
 
 - hosts: slurm-node
     #hosts1:10.130.166.205
@@ -111,6 +139,35 @@
     become: yes
     become_method: sudo
 
+- hosts: localhost
+  
+  vars_files:
+    - ./vars.yml
+  
+  tasks:
+  - name: change munge folder as secure
+    file:
+      path: /etc/munge
+      owner: "{{ mungeuser }}"
+      group: "{{ mungeuser }}"
+      mode: '0755'
+    become: yes
+    become_method: sudo
+
+  - name: change munge.key file as secure
+    file:
+      path: /etc/munge/munge.key
+      owner: "{{ mungeuser }}"
+      group: "{{ mungeuser }}"
+      mode: '0400'
+    become: yes
+    become_method: sudo
+
+
+- hosts: slurm-node
+  vars_files:
+    - ./vars.yml
+  tasks:
 
   - name: enable munge service
     service:
@@ -195,6 +252,7 @@
        - "fpm -s dir -t deb -v 1.0 -n {{ slurm_version }} --prefix=/usr -C /tmp/slurm-build ."
        - "dpkg -i {{ slurm_version }}_1.0_amd64.deb"
        - "mkdir /etc/slurm"
+    ignore_errors: yes
     become: yes
     become_method: sudo
 
@@ -280,7 +338,7 @@
       dest: /etc/slurm/slurm.conf
       state: present
       regexp: '^#ControlAddr='
-      line: 'ControlAddr=10.130.166.216'
+      line: 'ControlAddr={{ ip }}'
     become: yes
     become_method: sudo
 
@@ -289,7 +347,7 @@
       dest: /etc/slurm/slurm.conf
       state: present
       regexp: '^ControlMachine='
-      line: 'ControlMachine=ROCM-REL-MGPU'
+      line: 'ControlMachine={{ hostname }}'
     become: yes 
     become_method: sudo
 
@@ -373,7 +431,7 @@
 
 
 
-- hosts: slurm_master
+- hosts: localhost
   tasks:
 
   - name: copy the cookie
