@@ -63,7 +63,7 @@
   - name: add ip in vars.yml
     lineinfile:
       dest: ./vars.yml
-      line: 'hostname: {{ hostinfo.stdout }}'
+      line: 'nodehostname: {{ hostinfo.stdout }}'
     when: test_grep1.stdout == "0"
     become: yes
     become_method: sudo
@@ -347,7 +347,7 @@
       dest: /etc/slurm/slurm.conf
       state: present
       regexp: '^ControlMachine='
-      line: 'ControlMachine={{ hostname }}'
+      line: 'ControlMachine={{ nodehostname }}'
     become: yes 
     become_method: sudo
 
