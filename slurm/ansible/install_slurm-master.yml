@@ -11,6 +11,28 @@
 
   tasks:
 
+  - name: fetch the hostname
+    shell: "hostname"
+    register: hostinfo
+    become: yes
+    become_method: sudo
+
+
+  - name: Test for line
+    shell: cat ./vars.yml | grep hostname | wc -l
+    register: test_grep1
+    become: yes
+    become_method: sudo
+
+
+  - name: add ip in vars.yml
+    lineinfile:
+      dest: ./vars.yml
+      line: 'masterhostname: {{ hostinfo.stdout }}'
+    when: test_grep1.stdout == "0"
+    become: yes
+    become_method: sudo
+
   - name: Run the equivalent of "apt-get update" as a separate step
     apt:
       update_cache: yes
@@ -268,7 +290,7 @@
       dest: /etc/slurm/slurm.conf
       state: present
       regexp: '^ControlMachine='
-      line: 'ControlMachine=ROCM-REL-MGPU'
+      line: 'ControlMachine={{ masterhostname }}'
     become: yes
     become_method: sudo
 
