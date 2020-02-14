@@ -6,7 +6,7 @@ dockerpath = HOME + "/sing-dockerbuild"
 
 def clean_log():    
     if os.path.isdir(dockerpath):
-        shutil.rmtree(dockerpath)
+        shutil.rmtree(dockerpath[, ignore_errors[, onerror]])
     else:
         print("Can not delete the folder as it doesn't exists")
 
