@@ -347,7 +347,7 @@
       dest: /etc/slurm/slurm.conf
       state: present
       regexp: '^ControlMachine='
-      line: 'ControlMachine={{ nodehostname }}'
+      line: 'ControlMachine={{ masterhostname }}'
     become: yes 
     become_method: sudo
 
