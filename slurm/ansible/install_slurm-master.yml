@@ -19,7 +19,7 @@
 
 
   - name: Test for line
-    shell: cat ./vars.yml | grep hostname | wc -l
+    shell: cat ./vars.yml | grep masterhostname | wc -l
     register: test_grep1
     become: yes
     become_method: sudo
@@ -147,6 +147,7 @@
        - "grant usage on *.* to 'slurm'@'localhost'"
        - "grant all privileges on slurm_acct_db.* to 'slurm'@'localhost'"
        - "flush privileges"
+    ignore_errors: yes
     become: yes
     become_method: sudo
 

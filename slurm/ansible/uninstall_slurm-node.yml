@@ -1,6 +1,6 @@
 ---
-- hosts: slurm_client
-    hosts1:10.130.166.205
+- hosts: localhost
+  #hosts1:10.130.166.205
   #vars:
   #ansible_ssh_user='ansible'
   #ansible_ssh_pass='AH64_uh1'

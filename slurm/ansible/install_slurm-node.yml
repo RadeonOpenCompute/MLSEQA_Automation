@@ -54,7 +54,7 @@
 
 
   - name: Test for line
-    shell: cat ./vars.yml | grep hostname | wc -l
+    shell: cat ./vars.yml | grep nodehostname | wc -l
     register: test_grep1
     become: yes
     become_method: sudo

@@ -6,3 +6,6 @@ slurm_version: slurm-19.05.0
 DB_root_password: root
 slurm_mysql_password: slurmdbpass
 mungeuser: munge
+ip: 10.130.163.128
+hostname: ROCM-QA-R7-2
+masterhostname: ROCM-QA-R7-2
