@@ -39,7 +39,7 @@ def exec_rocmdock():
         #os.system("sudo docker tag singularity-image:latest rmula/docksingularity:0201")
         #os.system("sudo docker push rmula/docksingularity:0201")        
         #os.system("singularity pull docker://rmula/docksingularity:0201")
-        os.system("singularity exec docksingularity-0201.simg /home/app/rccl-tests/build/all_reduce_perf -b 8 -e 128M -f 2 -g 1 -o sum -d float")
+        os.system("cd /home/taccuser && singularity exec docksingularity-0201.simg /home/app/rccl-tests/build/all_reduce_perf -b 8 -e 128M -f 2 -g 1 -o sum -d float")
     except Exception as e:
         print("[-] Error running command %s" %(str(e)))
 
