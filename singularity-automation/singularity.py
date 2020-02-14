@@ -2,6 +2,7 @@ import os, sys, re, itertools, subprocess, docker, tempfile, shutil
 from subprocess import PIPE, run, call
 HOME = os.environ['HOME']
 dockerpath = HOME + "/sing-dockerbuild"
+singularitypath = HOME + "/singularity-image"
 
 
 def clean_log():    
@@ -28,18 +29,18 @@ def get_rocmdock():
 
 def exec_rocmdock():
     try:
-        #os.system("sudo mkdir %s && sudo cp dockerfile %s" %(dockerpath,dockerpath))
-        #os.system("cd %s && sudo docker build -t singularity-image ." %dockerpath)
-        #os.system("sudo docker run --rm -d -i -t --network=host --device=/dev/kfd --device=/dev/dri --group-add video --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --privileged singularity-image:latest /bin/bash")
-        #get_rocmdock()
-        #os.system("sudo docker restart %s" %get_rocmdock.container)
-        #os.system("sudo docker exec %s /bin/sh -c 'cd /home/app/rccl-tests/ && make'" %get_rocmdock.container)
-        #os.system("sudo docker exec %s /bin/sh -c '/home/app/rccl-tests/build/all_reduce_perf -b 8 -e 128M -f 2 -g 2 -o sum -d float'" %get_rocmdock.container)
-        #os.system("sudo docker commit %s %s" %(get_rocmdock.container,get_rocmdock.imageid))
-        #os.system("sudo docker tag singularity-image:latest rmula/docksingularity:0201")
-        #os.system("sudo docker push rmula/docksingularity:0201")        
-        #os.system("singularity pull docker://rmula/docksingularity:0201")
-        os.system("cd /home/taccuser && singularity exec docksingularity-0201.simg /home/app/rccl-tests/build/all_reduce_perf -b 8 -e 128M -f 2 -g 1 -o sum -d float")
+        os.system("sudo mkdir %s && sudo cp dockerfile %s" %(dockerpath,dockerpath))
+        os.system("cd %s && sudo docker build -t singularity-image ." %dockerpath)
+        os.system("sudo docker run --rm -d -i -t --network=host --device=/dev/kfd --device=/dev/dri --group-add video --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --privileged singularity-image:latest /bin/bash")
+        get_rocmdock()
+        os.system("sudo docker restart %s" %get_rocmdock.container)
+        os.system("sudo docker exec %s /bin/sh -c 'cd /home/app/rccl-tests/ && make'" %get_rocmdock.container)
+        os.system("sudo docker exec %s /bin/sh -c '/home/app/rccl-tests/build/all_reduce_perf -b 8 -e 128M -f 2 -g 2 -o sum -d float'" %get_rocmdock.container)
+        os.system("sudo docker commit %s %s" %(get_rocmdock.container,get_rocmdock.imageid))
+        os.system("sudo docker tag singularity-image:latest rmula/docksingularity:0201")
+        os.system("sudo docker push rmula/docksingularity:0201")        
+        os.system("sudo mkdir %s && cd %s && singularity pull docker://rmula/docksingularity:0201" %(singularitypath,singularitypath))
+        os.system("cd %s && singularity exec docksingularity-0201.simg /home/app/rccl-tests/build/all_reduce_perf -b 8 -e 128M -f 2 -g 1 -o sum -d float" %singularitypath)
     except Exception as e:
         print("[-] Error running command %s" %(str(e)))
 
