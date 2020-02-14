@@ -28,7 +28,7 @@ def get_rocmdock():
 
 def exec_rocmdock():
     try:
-        os.system("mkdir %s && cp dockerfile %s" %(dockerpath,dockerpath))
+        os.system("sudo mkdir %s && sudo cp dockerfile %s" %(dockerpath,dockerpath))
         os.system("cd %s && sudo docker build -t singularity-image ." %dockerpath)
         os.system("sudo docker run --rm -d -i -t --network=host --device=/dev/kfd --device=/dev/dri --group-add video --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --privileged singularity-image:latest /bin/bash")
         get_rocmdock()
