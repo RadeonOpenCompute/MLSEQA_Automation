@@ -1,0 +1,87 @@
+---
+
+- hosts: localhost
+
+  vars_files:
+    - ./vars.yml
+
+  tasks:
+  
+
+  - name: check if ssh exists
+    command: whoami
+    register: ansible_user
+
+  - name: Ansible check directory exists example.
+    stat:
+      path: /home/{{ ansible_user.stdout }}/.ssh
+    register: ssh_exist
+
+  - debug:
+      msg: "SSH is installed"
+    when: ssh_exist.stat.exists
+
+    #- name: Generate SSH keys
+    #shell: ssh-keygen -q -t rsa -f /root/.ssh/id_rsa -N ''
+    #args:
+    #creates: /root/.ssh/id_rsa
+    #when: ssh_exist == 0
+
+    #- name: Allow passwordless SSH between all hosts
+    #shell: /bin/cat /home/{{ ansible_user.stdout }}/.ssh/id_rsa.pub
+    #become: yes
+    #become_method: sudo
+    
+
+  - name: copy local public key
+    shell: cat /home/{{ ansible_user.stdout }}/.ssh/id_rsa.pub
+    register: pub_key
+    become: yes
+    become_method: sudo
+
+
+- hosts: slurm-node
+  tasks:
+  
+  - name: make direcotry
+    file:
+      path: "/home/<username>/.ssh"
+      state: directory
+    become: yes
+    become_method: sudo
+
+  - name: create empty file
+    file:
+      path: "/home/<username>/.ssh/authorized_keys"
+      state: touch
+    become: yes
+    become_method: sudo
+
+  - name: put pubkey
+    lineinfile:
+      path: "/home/<username>/.ssh/authorized_keys"
+      line: "{{ pub_key }}"
+    become: yes
+    become_method: sudo
+
+
+    #- name: Allow passwordless SSH between all hosts
+    #lineinfile:
+    #dest: /root/.ssh/authorized_keys
+    #state: present
+    #line:  " {{ hostvars[item]['ssh_keys']['stdout'] }}"
+    #with_items: "{{ groups['all']}}" 
+
+
+    #- name: Gather the apt package facts
+    #package_facts:
+    #manager: auto
+
+    #- name: Print the apt package facts
+    #debug:
+    #var: ansible_facts.packages
+
+    #- name: Check whether a package called foobar is installed
+    #debug:
+    #msg: "{{ ansible_facts.packages['ssh'] | length }} versions of foobar are installed!"
+    #when: "'ssh' in ansible_facts.packages"
