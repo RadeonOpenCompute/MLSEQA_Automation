@@ -74,15 +74,12 @@ def hip_print_testresults():
             cpppath = directedpath.replace("//", "/")
             count = count + 1
             #print(cpppath)
-            #print(count)
-            #print("CPP path: " + str(hip_get_cpppath(cpppath)))
-            #print("CSV path: " + str(csvfile))
-            #print("CSV kernel count: " + str(hip_get_csvkernel_count(csvfile)))
-            #print("CPP kernel count: " + str(hip_api_determine(f,hip_get_cpppath(cpppath))))
-            hip_print_testsummary(count,hip_get_cpppath(cpppath),csvfile,hip_get_csvkernel_count(csvfile),hip_api_determine(f,hip_get_cpppath(cpppath)))
-            #cppath = hip_get_cppkernel_count(hip_get_cpppath(cpppath))
-            cppkernelcount = hip_api_determine(f, hip_get_cpppath(cpppath))
-            if hip_get_csvkernel_count(csvfile) == cppkernelcount:
+            print(count)
+            print("CPP path: " + str(hip_get_cpppath(cpppath)))
+            print("CSV path: " + str(csvfile))
+            print("CSV kernel count: " + str(hip_get_csvkernel_count(csvfile)))
+            print("CPP kernel count: " + str(hip_get_cppkernel_count(hip_get_cpppath(cpppath))))
+            if hip_get_csvkernel_count(csvfile) == hip_get_cppkernel_count(hip_get_cpppath(cpppath)):
                 x.append([count,str("rocprof_hipapi_" + f + "test_case_" + str(count)),"Pass"])
             else:
                 x.append([count,str("rocprof_hipapi_" + f + "test_case_" + str(count)),"Fail"])
@@ -95,67 +92,29 @@ def hip_print_testresults():
             #os.system("/opt/rocm/bin/rocprof -d %s -o %s%s_test_case.csv %s" %(csvpath,csvpath,f,hip_apitests))
 
 
-def hip_print_testsummary(count,cpppath,csvfile,csvkernelcount,cppkernelcount):
-    print(count)
-    print("CPP path: " + str(cpppath))
-    print("CSV path: " + str(csvfile))
-    print("CSV kernel count: " + str(csvkernelcount))
-    print("CPP kernel count: " + str(cppkernelcount))
-
-
-def hip_api_determine(testname,path):
-
-    watchword = "hipLaunchKernelGGL"
-
-    if testname == "hipFuncDeviceSynchronize":
-        return hip_get_cppkernel_count(watchword,path) + 1
-    elif testname == "hipNormalizedFloatValueTex":
-        return hip_get_cppkernel_count(watchword,path) + 4
-    elif testname == "hipTexObjPitch":
-        return hip_get_cppkernel_count(watchword,path) + 5
-    elif testname == "simpleTexture3D":
-        return (hip_get_cppkernel_count(watchword,path) + 2) * 24
-    elif testname == "simpleTexture2DLayered":
-        return hip_get_cppkernel_count(watchword,path) + 4
-    elif testname == "hipLanguageExtensions":
-        return hip_get_cppkernel_count(watchword,path) - 1
-    elif testname == "hipShflTests":
-        return hip_get_cppkernel_count(watchword,path) + 3
-    elif testname == "hipShflUpDownTest":
-        return hip_get_cppkernel_count(watchword,path) + 6
-    elif testname == "hipExtLaunchKernelGGL":
-        watchword = "hipExtLaunchKernelGGL"
-        return hip_get_cppkernel_count(watchword,path)
-    elif testname == "hipLaunchParmFunctor":
-        return hip_get_cppkernel_count(watchword,path) - 2
-    elif testname == "hip_test_ldg":
-        return hip_get_cppkernel_count(watchword,path) * 9
-    elif testname == "hipTestDevice" or testname == "hipMathFunctions" or testname == "complex_loading_behavior":
-        return hip_get_cppkernel_count(watchword,path) - 1
-    elif testname == "LaunchKernel":
-        watchword = "hipLaunchKernel"
-        return hip_get_cppkernel_count(watchword,path)
-    elif testname == "hipClassKernel":
-        return hip_get_cppkernel_count(watchword,path) - 6
-    else:
-        return hip_get_cppkernel_count(watchword,path)
-    
-
-
 def hip_get_cpppath(path):
     #csvout = "~/rocprof_automation_test_cases/hip_trig_test_case.csv"
-    #path = "/home/taccuser/HIP/tests/src/deviceLib/hip_trig.cpp"    
+    
+    #path = "/home/taccuser/HIP/tests/src/deviceLib/hip_trig.cpp"
+    #print(path)
     src_path = path.split("/")
-    len_srcpath = len(src_path)    
-    if len_srcpath == 8:
-        source_path = "/" + src_path[1] + "/" + src_path[2] + "/" + src_path[3] + "/tests/src/" + src_path[6] + "/" + src_path[7]        
-        return hip_check_fileexists(source_path)        
-    elif len_srcpath == 7:
-        source_path = "/" + src_path[1] + "/" + src_path[2] + "/" + src_path[3] + "/tests/src/" + src_path[6]        
-        return hip_check_fileexists(source_path)        
-    elif len_srcpath == 9:
-        source_path = "/" + src_path[1] + "/" + src_path[2] + "/" + src_path[3] + "/tests/src/" + src_path[6] + "/" + src_path[7] + "/" + src_path[8]        
+    len_srcpath = len(src_path)
+    #print(len_srcpath)
+    if len_srcpath == 8:        
+        source_path = "/" + src_path[1] + "/" + src_path[2] + "/" + src_path[3] + "/tests/src/" + src_path[6] + "/" + src_path[7]
+        #print(source_path)
         return hip_check_fileexists(source_path)
+        #return source_path
+    elif len_srcpath == 7:
+        source_path = "/" + src_path[1] + "/" + src_path[2] + "/" + src_path[3] + "/tests/src/" + src_path[6]
+        #print(source_path)
+        return hip_check_fileexists(source_path)
+        #return source_path
+    elif len_srcpath == 9:
+        source_path = "/" + src_path[1] + "/" + src_path[2] + "/" + src_path[3] + "/tests/src/" + src_path[6] + "/" + src_path[7] + "/" + src_path[8]
+        #print(source_path)
+        return hip_check_fileexists(source_path)
+        #return source_path
 
 
 def hip_check_fileexists(path):
@@ -171,17 +130,23 @@ def hip_check_fileexists(path):
 
 
 
-def hip_get_cppkernel_count(watchword,path):
+def hip_get_cppkernel_count(path):
     #path = "/home/taccuser/HIP/tests/src/Functional/device/hipFuncGetDevice.cpp" 
     kernel_count = []
     try: 
         with open(path, "r") as fp:
             for line in fp:
-                if watchword in line:                    
-                    kernel_count.append(line)                
+                if "hipLaunchKernel" in line:
+                    #generate_lines_that_equal("hipLaunchKernel", fp):
+                    kernel_count.append(line)
+        #print(kernel_count)
+        #print(len(kernel_count.splitlines(  )))
         count=0
         for i in kernel_count:
-            count=count+1            
+            count=count+1
+            #print(i)
+            #newlist.append(i.split('\n')[0])
+        #print(newlist)
         return count
     except FileNotFoundError as error:
         print(error)
@@ -195,12 +160,20 @@ def hip_get_cppkernel_count(watchword,path):
 def hip_get_csvkernel_count(csvfile):
     kernel_count = [] 
     with open(csvfile, "r") as fp:
-        for line in fp:                            
-            kernel_count.append(line)    
+        for line in fp:
+            #if "hipLaunchKernel" in line:
+                #generate_lines_that_equal("hipLaunchKernel", fp):
+            kernel_count.append(line)
+    #print(kernel_count)
+    #print(len(kernel_count.splitlines(  )))
     count=0
     for i in kernel_count:
         count=count+1
     return count - 1
+        #print(i)
+        #newlist.append(i.split('\n')[0])
+    #print(newlist)
+    #print(count)
 
 
 
