@@ -1,86 +1,85 @@
+## Created by    : Rahul Mula
+## Creation Date : 12/03/2020
+## Description   : Script for Testing rocprofiler with HIP 148 API's
 import os, sys, re, itertools, subprocess, shutil
 import os.path
 import texttable as tt
 
 
+if len(sys.argv) != 2:
+    print("Please make sure you have entered HIP path, eg:/home/taccuser/HIP/")
+    sys.exit(1)
+
+
 HOME = os.environ['HOME']
 hip_gitpath = "https://github.com/ROCm-Developer-Tools/HIP.git"
-#kernel_count = []
+outputpath = "%s/rocprofiler_hipapi_automation_test_cases/" %HOME
+hippath = "%sbuild/directed_tests/" %sys.argv[1]
 newlist = []
 tab = tt.Texttable()
 x = [[]]
 
+
 def prerequisite():
-    os.popen("sudo apt-get install git")    
-    if os.path.exists("%s/HIP" %HOME):        
-        shutil.rmtree("%s/HIP" %HOME)
+    os.popen("sudo apt-get install git")       
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "texttable"]) 
 
 
 def hip_clone_repo():
+    if os.path.exists("%s/HIP" %HOME):
+        try:
+            os.system("sudo chmod 755 %s/HIP/" %HOME) 
+            shutil.rmtree("%s/HIP/" %HOME, onerror=handleError)
+        except:
+            os.rmdir("%s/HIP/" %HOME)
+    else:
+        print("HIP path doesn't exists")
     os.system("cd %s && git clone %s" %(HOME,hip_gitpath))
     os.system("cd %s/HIP && mkdir build" %HOME)
     os.system("cd %s/HIP/build && cmake .. -DCMAKE_INSTALL_PREFIX=$PWD/install && sudo make -j16" %HOME)
     os.system("cd %s/HIP/build && sudo make install && make check" %HOME)
 
 
-def hip_clear_hipapi_testFolder():
-    shutil.rmtree('~/rocprof_automation_test_cases', ignore_errors=True)
+
+
+def handleError(func, path, exc_info):
+    pass
+
+def hip_clear_hipapi_outputfolder():
+    if os.path.exists("%s" %outputpath):
+       shutil.rmtree(outputpath, ignore_errors=True)
    
 
    
 def hip_run_apitests():
-    list_dir = []
-    root_dir = "/home/taccuser/HIP/build/directed_tests/"
-    # create a list of file and sub directories 
-    
-    #listOfFile = os.listdir(root_dir)
-    testpath = r'/home/taccuser/HIP/build/directed_tests/'
-    csvpath = "~/rocprof_automation_test_cases/"
-
-
-    for (path, dirs, files) in os.walk(testpath):
-        #print(path)
-
-        #for d in dirs:
-            #print(d)
-        
+    list_dir = []   
+    testnum = 0
+    for (path, dirs, files) in os.walk(hippath):
         for f in files:
             hip_apitests = os.path.join(path, f)
-            #print(os.path.join(path, f))
-            os.system("/opt/rocm/bin/rocprof -d %s -o %s%s_test_case.csv %s" %(csvpath,csvpath,f,hip_apitests))
-            
-        
+            testnum = testnum + 1
+            testpath = outputpath + f + "_test_case_" + str(testnum)
+            os.system("/opt/rocm/bin/rocprof -d %s -o %s/%s_test_case_%s.csv %s" %(testpath,testpath,f,testnum,hip_apitests))
         src_path = path.split("/")
         print(src_path)
 
 
 def hip_print_testresults():
 
-    testpath = r'/home/taccuser/HIP/build/directed_tests/'
-    csvdir = "/home/taccuser/rocprof_automation_test_cases/"
+    #testpath = r'/home/taccuser/HIP/build/directed_tests/'
+    #csvdir = "/home/taccuser/rocprof_automation_test_cases/"
     kernel_count = []
     count = 0
-    for (path, dirs, files) in os.walk(testpath):
-        #print(path)
-
-        #for d in dirs:
-            #print(d)        
+    for (path, dirs, files) in os.walk(hippath):                
         for f in files:
             hip_apitests = os.path.join(path, f)
-            #print(os.path.join(path, f))
-            csvfile = csvdir + f + "_test_case.csv"
-            #hip_get_csvkernel_count(csvfile)
-            directedpath= path + "/" + f
-            cpppath = directedpath.replace("//", "/")
             count = count + 1
-            #print(cpppath)
-            #print(count)
-            #print("CPP path: " + str(hip_get_cpppath(cpppath)))
-            #print("CSV path: " + str(csvfile))
-            #print("CSV kernel count: " + str(hip_get_csvkernel_count(csvfile)))
-            #print("CPP kernel count: " + str(hip_api_determine(f,hip_get_cpppath(cpppath))))
-            hip_print_testsummary(count,hip_get_cpppath(cpppath),csvfile,hip_get_csvkernel_count(csvfile),hip_api_determine(f,hip_get_cpppath(cpppath)))
-            #cppath = hip_get_cppkernel_count(hip_get_cpppath(cpppath))
+            testpath = outputpath + f + "_test_case_" + str(count)
+            csvfile = testpath + "/" + f + "_test_case_%s.csv" %count
+            print(csvfile)
+            directedpath= path + "/" + f
+            cpppath = directedpath.replace("//", "/")                                                               
+            hip_print_testsummary(count,hip_get_cpppath(cpppath),csvfile,hip_get_csvkernel_count(csvfile),hip_api_determine(f,hip_get_cpppath(cpppath)))          
             cppkernelcount = hip_api_determine(f, hip_get_cpppath(cpppath))
             if hip_get_csvkernel_count(csvfile) == cppkernelcount:
                 x.append([count,str("rocprof_hipapi_" + f + "test_case_" + str(count)),"Pass"])
@@ -92,8 +91,7 @@ def hip_print_testresults():
     tab.header(['S.no', 'ROCProf-HIPApi-TestCase Names', 'Result'])
     print(tab.draw())
 
-            #os.system("/opt/rocm/bin/rocprof -d %s -o %s%s_test_case.csv %s" %(csvpath,csvpath,f,hip_apitests))
-
+          
 
 def hip_print_testsummary(count,cpppath,csvfile,csvkernelcount,cppkernelcount):
     print(count)
@@ -106,7 +104,6 @@ def hip_print_testsummary(count,cpppath,csvfile,csvkernelcount,cppkernelcount):
 def hip_api_determine(testname,path):
 
     watchword = "hipLaunchKernelGGL"
-
     if testname == "hipFuncDeviceSynchronize":
         return hip_get_cppkernel_count(watchword,path) + 1
     elif testname == "hipNormalizedFloatValueTex":
@@ -142,9 +139,7 @@ def hip_api_determine(testname,path):
     
 
 
-def hip_get_cpppath(path):
-    #csvout = "~/rocprof_automation_test_cases/hip_trig_test_case.csv"
-    #path = "/home/taccuser/HIP/tests/src/deviceLib/hip_trig.cpp"    
+def hip_get_cpppath(path):   
     src_path = path.split("/")
     len_srcpath = len(src_path)    
     if len_srcpath == 8:
@@ -171,8 +166,7 @@ def hip_check_fileexists(path):
 
 
 
-def hip_get_cppkernel_count(watchword,path):
-    #path = "/home/taccuser/HIP/tests/src/Functional/device/hipFuncGetDevice.cpp" 
+def hip_get_cppkernel_count(watchword,path):     
     kernel_count = []
     try: 
         with open(path, "r") as fp:
@@ -194,27 +188,23 @@ def hip_get_cppkernel_count(watchword,path):
 
 def hip_get_csvkernel_count(csvfile):
     kernel_count = [] 
-    with open(csvfile, "r") as fp:
-        for line in fp:                            
-            kernel_count.append(line)    
-    count=0
-    for i in kernel_count:
-        count=count+1
-    return count - 1
+    try:
+        with open(csvfile, "r") as fp:
+            for line in fp:                            
+                kernel_count.append(line)    
+        count=0
+        for i in kernel_count:
+            count=count+1
+        return count - 1
+    except:
+        print("Other error")
+        pass
 
 
 
-#hip_clear_hipapi_testFolder()
+prerequisite()
 #hip_clone_repo()
-#hip_run_apitests()
-#hip_print_testresults()
-#hip_get_cpppath()
-#hip_get_cppkernel_count()
-#hip_get_csvkernel_count()
+hip_clear_hipapi_outputfolder()
+hip_run_apitests()
 hip_print_testresults()
-
-
-
-#prerequisite()
-#hip_clone_repo()
-#getListOfFiles()
+print("------------------------Output logs will be stored in: " + outputpath)
