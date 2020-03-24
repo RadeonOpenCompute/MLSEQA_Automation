@@ -1,0 +1,6 @@
+{
+	
+	"hip_apis": ["hipMalloc","hipMemcpy","hipModuleLaunchKernel","hipFree"]
+	
+
+}
