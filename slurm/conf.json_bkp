@@ -1,6 +1,6 @@
 {
 	
-	"N1hostname": "ROCm-QA-VG20-1",
+	"N1hostname": "slurm-node",
 	"N1cards" : "1",
 	"N1_autoallocation": "srun -N1 --gres=gpu:1 hostname",
         "gpu_logpath": "/home/taccuser/slurm-automation/out_gpu.log",
