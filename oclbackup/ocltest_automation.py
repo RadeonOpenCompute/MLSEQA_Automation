@@ -153,29 +153,16 @@ def ocl_get_pkg_version():
     print(pkg_name)
     if "bkc" in pkg_name:
         print(ocl_hipclang_fetch_pkg(pkg_name))
-        #print(pkg_name.split("-")[8])
-        #hipclang_pkgname = "compute-rocm-dkms-no-npi-hipclang-int-bkc-%s-%s.tar.bz2" %(pkg_name.split("-")[8],pkg_name.split("-")[9])
-        #pkg_details = pkg_url[1].split("/")[6]
-        #print(pkg_details)
-        #print(pkg_details.split("-")[-1])
-        #res = [sub.replace(pkg_details.split("-")[-1], pkg_name.split("-")[8]) for sub in pkg_details.split("-")]
-        #print('-'.join(res))
-        #pkg_interchange = pkg_url[1].replace(pkg_url[1].split("/")[6], '-'.join(res))
-        #print(pkg_interchange)
-        #hipclang_pkgdetails = pkg_interchange + hipclang_pkgname
-        #print(hipclang_pkgdetails)
-        #return hipclang_pkgdetails
+     
     elif "hipclang" not in pkg_name:
-        hipclang_pkgname = "compute-rocm-dkms-no-npi-%s.tar.bz2" %pkg_name.split("-")[5]
-        print(pkg_url[0].split("/"))
-        return hipclang_pkgname
-        print(hipclang_pkgname)
+        ocl_hccbkc_fetch_pkg(pkg_name)
+
     elif "rel" in pkg_name:
-        hipclang_pkgname = "compute-rocm-dkms-no-npi-hipclang-int-bkc-%s-%s.tar.bz2" %(pkg_name.split("-")[8],pkg_name.split("-")[9])
+        hipclang_pkgname = "compute-rocm-dkms-no-npi-hipclang-int-bkc-{rocm_ver}-{build_ver}.tar.bz2".format(rocm_ver=pkg_name.split("-")[8], build_ver=pkg_name.split("-")[9])
         print("release")
   
 def ocl_hipclang_fetch_pkg(pkg_name):
-    hipclang_pkgname = "compute-rocm-dkms-no-npi-hipclang-int-bkc-%s-%s.tar.bz2" %(pkg_name.split("-")[8],pkg_name.split("-")[9])
+    hipclang_pkgname = "compute-rocm-dkms-no-npi-hipclang-int-bkc-{rocm_ver}-{build_ver}.tar.bz2".format(rocm_ver=pkg_name.split("-")[8], build_ver=pkg_name.split("-")[9])
     pkg_details = pkg_url[1].split("/")[6]
     res = [sub.replace(pkg_details.split("-")[-1], pkg_name.split("-")[8]) for sub in pkg_details.split("-")]
     pkg_interchange = pkg_url[1].replace(pkg_url[1].split("/")[6], '-'.join(res))
@@ -183,14 +170,32 @@ def ocl_hipclang_fetch_pkg(pkg_name):
     return hipclang_pkgdetails
 
 def ocl_hccbkc_fetch_pkg(pkg_name):
-    print(pkg_name)
-    pkg_url[0].split("/")
+    hipclang_pkgname = "compute-rocm-dkms-no-npi-{build_ver}.tar.bz2".format(build_ver=pkg_name.split("-")[5])
+    pkg = pkg_url[0].replace(pkg_url[0].split("/")[5],pkg_name.split("-")[5])
+    pkgdetails = pkg + hipclang_pkgname
+    #print(pkgdetails)
+    #return pkgdetails
+    ocl_download_pkg(hipclang_pkgname,pkgdetails)
 
 
-def ocl_download_pkg(pkg_link):
+def ocl_download_pkg(pkg_name, pkg_link):
     #http://rocm-ci.amd.com/job/compute-rocm-dkms-no-npi/lastSuccessfulBuild/artifact/artifacts/compute-rocm-dkms-no-npi-2256.tar.bz2 
-    pkg_details = ocl_get_pkg_version()
-    
+    oclfolder_name = pkg_name.split(".")[0]
+    ocl_pkg_folder = HOME + "/" + oclfolder_name + "/bin/ocltst/"
+	
+    if os.path.exists(ocl_pkg_folder):
+		
+        print(ocl_pkg_folder)
+        #os.environ["LD_LIBRARY_PATH"] = "%s" %ocl_pkg_folder
+	ocl_run_tests(ocl_pkg_folder)
+    else:    	
+    	os.system("cd $HOME && mkdir {oclfolder} && cd {oclfolder} && wget {ocl_pkg_link}".format(oclfolder=oclfolder_name,ocl_pkg_link=pkg_link))
+   	os.system("cd $HOME/{oclfolder} && pwd && tar -xvjf {oclpkg_name}".format(oclfolder=oclfolder_name,oclpkg_name=pkg_name ))
+   	ocl_pkg_folder = HOME + "/" + oclfolder_name + "/bin/ocltst/"
+    	print(ocl_pkg_folder)
+    	os.environ["LD_LIBRARY_PATH"] = "%s" %ocl_pkg_folder
+   	ocl_run_tests(ocl_pkg_folder)
+ 
 
 
 #def ocl_check_folderexists(pkg_name):    
@@ -202,27 +207,26 @@ def ocl_download_pkg(pkg_link):
 
     #print(string1.split("-")[5])
 
-#def ocl_test_pkgname(string1):
-    #hipclang_pkgname = "compute-rocm-dkms-no-npi-hipclang-int-bkc-%s-%s.tar.bz2" %(string1.split("-")[8],string1.split("-")[9])
+def ocl_run_tests(ocl_pkg_folder):
 
-def ocl_run_tests():
-
-    os.system("export LD_LIBRARY_PATH='%s'" %test_path) 
-    os.system("pwd")
+    os.system("export LD_LIBRARY_PATH='%s'" %ocl_pkg_folder)
+    #os.system("export LD_LIBRARY_PATH='%s'" %test_path)
+    print(ocl_pkg_folder)
+    print(os.system("pwd"))
     print("=====Running oclcompiler======")
-    os.system("cd %s && ./ocltst -m oclcompiler.so -A oclcompiler.exclude | tee oclcompiler.log" %test_path)
+    os.system("cd %s && ./ocltst -m oclcompiler.so -A oclcompiler.exclude | tee oclcompiler.log" %ocl_pkg_folder)
     print("=====Running oclprofiler======")
-    os.system("cd %s && ./ocltst -m oclprofiler.so -A oclprofiler.exclude | tee oclprofiler.log" %test_path)
+    os.system("cd %s && ./ocltst -m oclprofiler.so -A oclprofiler.exclude | tee oclprofiler.log" %ocl_pkg_folder)
     print("=====Running ocldebugger======")
-    os.system("cd %s && ./ocltst -m ocldebugger.so -A ocldebugger.exclude | tee ocldebugger.log" %test_path)
+    os.system("cd %s && ./ocltst -m ocldebugger.so -A ocldebugger.exclude | tee ocldebugger.log" %ocl_pkg_folder)
     print("=====Running oclmediafunc======")
-    os.system("cd %s && ./ocltst -m oclmediafunc.so -A oclmediafunc.exclude | tee oclmediafunc.log" %test_path)
+    os.system("cd %s && ./ocltst -m oclmediafunc.so -A oclmediafunc.exclude | tee oclmediafunc.log" %ocl_pkg_folder)
     print("=====Running oclperf======")
-    os.system("cd %s && ./ocltst -m oclperf.so -A oclperf.exclude | tee oclperf.log" %test_path)
+    os.system("cd %s && ./ocltst -m oclperf.so -A oclperf.exclude | tee oclperf.log" %ocl_pkg_folder)
     print("=====Running oclregression======")
-    os.system("cd %s && ./ocltst -m oclregression.so -A oclregression.exclude | tee oclregression.log" %test_path)
+    os.system("cd %s && ./ocltst -m oclregression.so -A oclregression.exclude | tee oclregression.log" %ocl_pkg_folder)
     print("=====Running oclfrontend======")
-    os.system("cd %s && ./ocltst -m oclfrontend.so -A oclfrontend.exclude | tee oclfrontend.log" %test_path)
+    os.system("cd %s && ./ocltst -m oclfrontend.so -A oclfrontend.exclude | tee oclfrontend.log" %ocl_pkg_folder)
     #os.system("cd %s && ./ocltst -m oclruntime.so -A oclruntime.exclude 2>&1 | tee oclruntime.log" %test_path)
     #hip_summary_print("System Info", sysinfo, mode='w')
 
