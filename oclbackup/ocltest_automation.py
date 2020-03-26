@@ -27,11 +27,12 @@ from artifactory import ArtifactoryPath
 #start=datetime.datetime.now()
 os.system("sudo apt -y install unzip pciutils")
 HOME = os.environ['HOME']
+os.environ['LD_LIBRARY_PATH'] = "/opt/rocm/opencl/lib/x86_64:."
 lkg_log_path= HOME + "/test.txt"
 test_path = HOME + "/ocltst/x86_64"
 ocl_logs=[test_path +'/oclregression.log', test_path +'/oclcompiler.log', test_path +'/oclprofiler.log', test_path +'/ocldebugger.log', test_path +'/oclfrontend.log',test_path +'/oclmediafunc.log', test_path +'/oclperf.log']
 summary_files = [HOME + '/ocl_summary.html', HOME + '/ocl_summary.txt', HOME + '/ocl.log']
-pkg_url = ["http://rocm-ci.amd.com/job/compute-rocm-dkms-no-npi/lastSuccessfulBuild/artifact/artifacts/","http://rocm-ci.amd.com/view/HIP-Clang/job/compute-rocm-dkms-no-npi-hipclang-int-bkc-2/25/artifact/artifacts/"]
+pkg_url = ["http://rocm-ci.amd.com/job/compute-rocm-dkms-no-npi/lastSuccessfulBuild/artifact/artifacts/","http://rocm-ci.amd.com/view/HIP-Clang/job/compute-rocm-dkms-no-npi-hipclang-int-bkc-2/25/artifact/artifacts/","http://rocm-ci.amd.com/job/compute-rocm-rel-3.0/9/artifact/artifacts/"]
 
 regex=r'.*?Passed Tests:.*$'
 regex1=r'.*?Failed Tests:.*$'
@@ -152,15 +153,33 @@ def ocl_get_pkg_version():
     pkg_name = re.findall(r'\S+', rocmver)[2]
     print(pkg_name)
     if "bkc" in pkg_name:
+        print("Entered in bkc build")
         print(ocl_hipclang_fetch_pkg(pkg_name))
      
-    elif "hipclang" not in pkg_name:
+    elif "hipclang" in pkg_name:
+        print("Entered in Hipclang build")
         ocl_hccbkc_fetch_pkg(pkg_name)
 
     elif "rel" in pkg_name:
-        hipclang_pkgname = "compute-rocm-dkms-no-npi-hipclang-int-bkc-{rocm_ver}-{build_ver}.tar.bz2".format(rocm_ver=pkg_name.split("-")[8], build_ver=pkg_name.split("-")[9])
-        print("release")
-  
+        #hipclang_pkgname = "compute-rocm-dkms-no-npi-hipclang-int-bkc-{rocm_ver}-{build_ver}.tar.bz2".format(rocm_ver=pkg_name.split("-")[8], build_ver=pkg_name.split("-")[9])
+        ocl_hccrel_fetch_pkg(pkg_name)
+    else:
+        print("Not in any build")
+
+
+def ocl_hccrel_fetch_pkg(pkg_name):
+    #print(pkg_name.split("-")[3])
+    print("Entered in HCC rel")
+    hcc_rel = "compute-rocm-rel-{rel_ver}-{build_ver}.tar.bz2".format(rel_ver=pkg_name.split("-")[3],build_ver=pkg_name.split("-")[4])
+    pkg_details = pkg_url[2].split("/")[4]
+    pkg = pkg_url[2].replace(pkg_url[2].split("/")[5],pkg_name.split("-")[4])
+    print(pkg)
+    #relversion replace
+    pkg_details.split("-")[3]
+    pkg_link = pkg.replace(pkg_details.split("-")[3],pkg_name.split("-")[3]) + hcc_rel
+    print(pkg_link)
+    ocl_download_pkg(hcc_rel,pkg_link)
+
 def ocl_hipclang_fetch_pkg(pkg_name):
     hipclang_pkgname = "compute-rocm-dkms-no-npi-hipclang-int-bkc-{rocm_ver}-{build_ver}.tar.bz2".format(rocm_ver=pkg_name.split("-")[8], build_ver=pkg_name.split("-")[9])
     pkg_details = pkg_url[1].split("/")[6]
@@ -170,31 +189,28 @@ def ocl_hipclang_fetch_pkg(pkg_name):
     return hipclang_pkgdetails
 
 def ocl_hccbkc_fetch_pkg(pkg_name):
-    hipclang_pkgname = "compute-rocm-dkms-no-npi-{build_ver}.tar.bz2".format(build_ver=pkg_name.split("-")[5])
+    hccbkc_pkgname = "compute-rocm-dkms-no-npi-{build_ver}.tar.bz2".format(build_ver=pkg_name.split("-")[5])
     pkg = pkg_url[0].replace(pkg_url[0].split("/")[5],pkg_name.split("-")[5])
-    pkgdetails = pkg + hipclang_pkgname
+    pkgdetails = pkg + hccbkc_pkgname
     #print(pkgdetails)
     #return pkgdetails
-    ocl_download_pkg(hipclang_pkgname,pkgdetails)
+    ocl_download_pkg(hccbkc_pkgname,pkgdetails)
 
 
 def ocl_download_pkg(pkg_name, pkg_link):
     #http://rocm-ci.amd.com/job/compute-rocm-dkms-no-npi/lastSuccessfulBuild/artifact/artifacts/compute-rocm-dkms-no-npi-2256.tar.bz2 
     oclfolder_name = pkg_name.split(".")[0]
     ocl_pkg_folder = HOME + "/" + oclfolder_name + "/bin/ocltst/"
-	
     if os.path.exists(ocl_pkg_folder):
-		
+        print(ocl_pkg_folder)
+        ocl_run_tests(ocl_pkg_folder)
+    else:
+        os.system("cd $HOME && mkdir {oclfolder} && cd {oclfolder} && wget {ocl_pkg_link}".format(oclfolder=oclfolder_name,ocl_pkg_link=pkg_link))
+        os.system("cd $HOME/{oclfolder} && pwd && tar -xvjf {oclpkg_name}".format(oclfolder=oclfolder_name,oclpkg_name=pkg_name ))
+        ocl_pkg_folder = HOME + "/" + oclfolder_name + "/bin/ocltst/"
         print(ocl_pkg_folder)
         #os.environ["LD_LIBRARY_PATH"] = "%s" %ocl_pkg_folder
-	ocl_run_tests(ocl_pkg_folder)
-    else:    	
-    	os.system("cd $HOME && mkdir {oclfolder} && cd {oclfolder} && wget {ocl_pkg_link}".format(oclfolder=oclfolder_name,ocl_pkg_link=pkg_link))
-   	os.system("cd $HOME/{oclfolder} && pwd && tar -xvjf {oclpkg_name}".format(oclfolder=oclfolder_name,oclpkg_name=pkg_name ))
-   	ocl_pkg_folder = HOME + "/" + oclfolder_name + "/bin/ocltst/"
-    	print(ocl_pkg_folder)
-    	os.environ["LD_LIBRARY_PATH"] = "%s" %ocl_pkg_folder
-   	ocl_run_tests(ocl_pkg_folder)
+        ocl_run_tests(ocl_pkg_folder)
  
 
 
@@ -208,11 +224,16 @@ def ocl_download_pkg(pkg_name, pkg_link):
     #print(string1.split("-")[5])
 
 def ocl_run_tests(ocl_pkg_folder):
-
-    os.system("export LD_LIBRARY_PATH='%s'" %ocl_pkg_folder)
-    #os.system("export LD_LIBRARY_PATH='%s'" %test_path)
+    #export_path = "/opt/rocm/opencl/lib/x86_64"
+    #exp = "LD_LIBRARY_PATH:."
+    #print(os.system("export"))
+    #os.system("unset LD_LIBRARY_PATH")
+    #os.system("export LD_LIBRARY_PATH=%s" %export_path)
+    #os.system("export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.")
     print(ocl_pkg_folder)
     print(os.system("pwd"))
+    print(os.system("export"))
+    print(ocl_pkg_folder)
     print("=====Running oclcompiler======")
     os.system("cd %s && ./ocltst -m oclcompiler.so -A oclcompiler.exclude | tee oclcompiler.log" %ocl_pkg_folder)
     print("=====Running oclprofiler======")
