@@ -1,6 +1,11 @@
 {
-	
-	"hip_apis": ["hipMalloc","hipMemcpy","hipModuleLaunchKernel","hipFree"]
-	
+
+        "hip_apis": ["hipMalloc","hipMemcpy","hipModuleLaunchKernel","hipFree"],
+	"hipHostGetFlags": ["hipGetDevice","hipGetDeviceProperties","hipHostMalloc","hipHostGetDevicePointer","hipHostGetFlags","hipMemcpy"],
+	"hipMemset2D": ["hipMallocPitch","hipMemset2D","hipStreamCreate","hipMemset2DAsync","hipStreamSynchronize","hipMemcpy2D","hipStreamDestroy","hipSetDevice"],
+	"hipMemPtrGetInfo":["hipMalloc"],
+	"hipMemoryAllocateCoherent":["hipHostMalloc","hipModuleLaunchKernel","hipHostFree"]
+
+
 
 }
