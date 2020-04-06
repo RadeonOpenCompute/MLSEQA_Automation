@@ -1,3 +1,6 @@
+## Created by    : Rahul Mula
+## Creation Date : 12/03/2020
+## Description   : Script for Testing Directed hip API's with --hip-trace option (total 158 api's covered)
 import os, sys, re, itertools, subprocess, shutil, json
 import texttable as tt
 from prettytable import PrettyTable
@@ -59,7 +62,6 @@ clean:
 def remove_hiptrace_outputdir():
     if os.path.exists("%s" %hiptrace_outdir):
         print(hiptrace_outdir)
-        #shutil.rmtree(hiptrace_outdir)
         os.system("sudo rm -r %s" %hiptrace_outdir)
     else:
         print("Hip trace output folder not exist so creating new")
@@ -81,8 +83,7 @@ def hip_load_conf(var):
 
 
 #copy all 148 directed hip api cpp files in generic folder
-def rocprof_copy_hipcpp():
-    #directed_binaries = destfolder + "/directed_binaries"
+def rocprof_copy_hipcpp():    
     print(directed_binaries)
     os.system("cd %s && mkdir %s && mkdir -r %s" %(HOME,destfolder,directed_binaries))
     os.system("cd %s && mkdir directed_binaries" %destfolder)
@@ -104,17 +105,14 @@ def rocprof_run_binary():
     os.system("mkdir %s" %hiptrace_outdir)
     print(hiptrace_outdir)
     testnum = 0
-    for (path, dirs, files) in os.walk(directed_binaries):
-        print("Hi")
+    for (path, dirs, files) in os.walk(directed_binaries):        
         for f in files:
             testnum = testnum + 1
             testpath = directed_binaries + "/" + f
             print(testpath)
             if "hipStressMemcpy" not in f:
-                apitracedata_outdir = hiptrace_outdir + "/" + f 
-                #+ "-" + str(testnum)
+                apitracedata_outdir = hiptrace_outdir + "/" + f                 
                 os.makedirs(apitracedata_outdir, exist_ok=True)
-                #os.system("cd {outdir} && sudo mkdir {outputdir}".format(outdir=hiptrace_outdir,outputdir=apitracedata_outdir))
                 os.system("cd %s && sudo /opt/rocm/bin/rocprof --hip-trace -d . -o ./%s_test_case.csv %s" %(apitracedata_outdir,f,testpath))
                 hipapi_trace_folders.append(apitracedata_outdir)
 
@@ -138,12 +136,10 @@ def hip_get_trace_data():
         if count > 3:
             print("two rpl folders")
             hiptracefile = outputpath + "/" + inputdir[0][0] + "/" + str(inputdir[1][0]) + "/hip_api_trace.txt"            
-            #hip_get_trace_api(subfolder,hiptracefile)
             x.append([s_no,"rocprof-hiptrace-" + testcase_name,hip_get_trace_api(subfolder,hiptracefile)])
         else:            
             print("one rpl folders")       
-            hiptracefile = outputpath + "/" + inputdir[0][0] + "/" + inputdir[1][0] + "/hip_api_trace.txt"
-            #hip_get_trace_api(subfolder,hiptracefile)
+            hiptracefile = outputpath + "/" + inputdir[0][0] + "/" + inputdir[1][0] + "/hip_api_trace.txt"            
             result = hip_get_trace_api(subfolder,hiptracefile)
             x.append([testnum,"rocprof-hiptrace-" + testcase_name + "-" + str(testnum),result])
             totresults.append(result)
@@ -211,10 +207,10 @@ def hiptrace_print_summary():
 
 
 
-#remove_hiptrace_outputdir()
-#create_makefile()
-#rocprof_copy_hipcpp()
-#rocprof_run_binary()
+remove_hiptrace_outputdir()
+create_makefile()
+rocprof_copy_hipcpp()
+rocprof_run_binary()
 hip_get_trace_data()
 hiptrace_print_summary()
 #hip_get_trace_api()
