@@ -1,6 +1,6 @@
 {
-
-    "hip_apis": ["hipMalloc","hipMemcpy","hipModuleLaunchKernel","hipFree"],
+	
+    	"hip_apis": ["hipMalloc","hipMemcpy","hipModuleLaunchKernel","hipFree"],
 	"hipHostGetFlags": ["hipGetDevice","hipGetDeviceProperties","hipHostMalloc","hipHostGetDevicePointer","hipHostGetFlags","hipMemcpy"],
 	"hipMemset2D": ["hipMallocPitch","hipMemset2D","hipStreamCreate","hipMemset2DAsync","hipStreamSynchronize","hipMemcpy2D","hipStreamDestroy","hipSetDevice"],
 	"hipMemPtrGetInfo":["hipMalloc"],
@@ -20,19 +20,19 @@
 	"hipMemcpyAsync2":["hipHostMalloc","hipMalloc","hipStreamCreate","hipMemcpyAsync","hipDeviceSynchronize"],
 	"hipMemcpyAll":["hipGetDeviceCount","hipSetDevice","hipHostMalloc","hipMalloc","hipMemcpy"],
 	"hipMemcpy3D":["hipMalloc3DArray","hipMemcpy3D","hipDeviceSynchronize","hipFreeArray"],
-    "hipMallocManaged":["hipDeviceSynchronize","hipFree","hipMallocManaged"],
+	"hipMallocManaged":["hipDeviceSynchronize","hipFree","hipMallocManaged"],
 	"hipHostRegister":["hipMemset","hipMemcpy","hipHostUnregister","hipHostRegister","hipHostGetDevicePointer","hipModuleLaunchKernel","hipDeviceSynchronize","hipMalloc","hipGetDeviceCount","hipSetDevice"],
 	"hipHostGetFlags":["hipGetDevice","hipGetDeviceProperties","hipHostMalloc","hipHostGetDevicePointer","hipHostGetFlags","hipMemcpy","hipModuleLaunchKernel"],
 	"hipHostMalloc":["hipStreamCreate","hipEventCreateWithFlags","hipDeviceSynchronize","hipEventRecord"],
 	"hipStreamCreate":["hipEventCreateWithFlags","hipEventRecord","hipStreamDestroy","hipEventDestroy","hipGetDevice","hipGetDeviceProperties","hipHostGetDevicePointer","hipMalloc","hipMemcpy","hipDeviceSynchronize","hipHostFree","hipHostMalloc"],	
-    "hipTestMemcpyPin":["hipHostMalloc","hipMemcpy","hipMalloc","hipDeviceSynchronize"],
-    "p2p_copy_coherency":["hipDeviceCanAccessPeer","hipDeviceEnablePeerAccess","hipEventCreateWithFlags","hipStreamWaitEvent","hipEventRecord","hipMemcpyAsync","hipStreamSynchronize","hipEventDestroy","hipSetDevice","hipMalloc","hipStreamCreate","hipModuleLaunchKernel","hipDeviceSynchronize","hipHostMalloc","hipFree","hipHostFree","hipStreamDestroy","hipGetDeviceCount"],
-    "hipChooseDevice":["hipChooseDevice"],
-    "hipGetDeviceCount":["hipGetDeviceCount","hipDeviceGet","hipDeviceComputeCapability"],
-    "hipDeviceGetByPCIBusId":["hipGetDeviceCount","hipDeviceGetPCIBusId","hipDeviceGetAttribute"],
-    "hipDeviceGetName":["hipGetDeviceCount","hipDeviceGet","hipDeviceGetName"],
-    "hipDeviceGetPCIBusId":["hipGetDeviceCount","hipDeviceGetPCIBusId","hipDeviceGetAttribute"],
-    "hipDeviceSynchronize":["hipHostMalloc","hipMalloc","hipStreamCreate","hipMemcpyAsync","hipModuleLaunchKernel","hipDeviceSynchronize"],
+    	"hipTestMemcpyPin":["hipHostMalloc","hipMemcpy","hipMalloc","hipDeviceSynchronize"],
+    	"p2p_copy_coherency":["hipDeviceCanAccessPeer","hipDeviceEnablePeerAccess","hipEventCreateWithFlags","hipStreamWaitEvent","hipEventRecord","hipMemcpyAsync","hipStreamSynchronize","hipEventDestroy","hipSetDevice","hipMalloc","hipStreamCreate","hipModuleLaunchKernel","hipDeviceSynchronize","hipHostMalloc","hipFree","hipHostFree","hipStreamDestroy","hipGetDeviceCount"],
+    	"hipChooseDevice":["hipChooseDevice"],
+    	"hipGetDeviceCount":["hipGetDeviceCount","hipDeviceGet","hipDeviceComputeCapability"],
+    	"hipDeviceGetByPCIBusId":["hipGetDeviceCount","hipDeviceGetPCIBusId","hipDeviceGetAttribute"],
+    	"hipDeviceGetName":["hipGetDeviceCount","hipDeviceGet","hipDeviceGetName"],
+    	"hipDeviceGetPCIBusId":["hipGetDeviceCount","hipDeviceGetPCIBusId","hipDeviceGetAttribute"],
+    	"hipDeviceSynchronize":["hipHostMalloc","hipMalloc","hipStreamCreate","hipMemcpyAsync","hipModuleLaunchKernel","hipDeviceSynchronize"],
     "hipDeviceTotalMem":["hipGetDeviceCount","hipDeviceGet","hipDeviceTotalMem"],
     "hipGetDeviceAttribute":["hipGetDeviceProperties","hipDeviceGetAttribute"],
     "hipGetDevice":["hipGetDeviceCount","hipSetDevice","hipGetDevice"],
@@ -125,7 +125,7 @@
 	"hipExtLaunchKernelGGL":["hipMemcpy","hipExtLaunchKernelGGL","hipDeviceSynchronize"],
 	"hipGridLaunch":["hipMemcpy","hipModuleLaunchKernel","hipDeviceSynchronize"],
 	"hipLanguageExtensions":["hipModuleLaunchKernel","vectorADD"],
-	"hipLaunchParm":["hipMalloc","hipDeviceSynchronize","hipHostMalloc","hipMemset","hipModuleLaunchKernel","hipHostFree","hipFree","hipMemcpy"]
+	"hipLaunchParm":["hipMalloc","hipDeviceSynchronize","hipHostMalloc","hipMemset","hipModuleLaunchKernel","hipHostFree","hipFree","hipMemcpy"],
 	"hipLaunchParmFunctor":["hipMalloc","hipHostMalloc","hipMemcpy","hipModuleLaunchKernel","hipHostFree","hipFree"],
 	"hipPrintfKernel":["hipModuleLaunchKernel","hipDeviceSynchronize","hipSetDevice"],
 	"hipShflTests":["hipMalloc","hipMemcpy","hipModuleLaunchKernel"],
@@ -158,7 +158,7 @@
 	"hipGetDeviceProperties":["hipGetDeviceProperties"],
 	"hipSetDevice":["hipGetDeviceCount","hipSetDevice"],
 	"hipSetDeviceFlags":["hipSetDeviceFlags"],
-	"hipPeerToPeer_simple":["hipGetDevice","hipSetDevice","hipDeviceSynchronize","hipGetDeviceCount","hipDeviceCanAccessPeer","hipDeviceReset","hipDeviceEnablePeerAccess","hipMalloc","hipMemset","myHipMemcpy"]
+	"hipPeerToPeer_simple":["hipGetDevice","hipSetDevice","hipDeviceSynchronize","hipGetDeviceCount","hipDeviceCanAccessPeer","hipDeviceReset","hipDeviceEnablePeerAccess","hipMalloc","hipMemset","myHipMemcpy"],
 	"hipPerfMemcpy":["hipMemcpy","hipDeviceSynchronize","hipMalloc"],
 	"hipStressAsync":["hipHostMalloc","hipMalloc","hipStreamCreate","hipMemcpyAsync","hipLaunchKernel"],
 	"hipStressChain":["hipMalloc","hipMemcpy","hipLaunchKernel","hipDeviceSynchronize"],
@@ -175,7 +175,8 @@
 	"hipTextureObj2D":["hipMallocArray","hipMemcpyToArray","hipCreateTextureObject","hipMalloc","hipModuleLaunchKernel","hipDeviceSynchronize","hipMemcpy","hipDestroyTextureObject","hipFree","hipFreeArray"],
 	"hipTextureRef2D":["hipMallocArray","hipMemcpyToArray","hipBindTextureToArray","hipMalloc","hipMemcpy","hipUnbindTexture","hipFree","hipFreeArray"],
 	"hipMalloc3DArray":["hipMalloc3DArray","hipMemcpy3D","hipBindTextureToArray","hipDeviceSynchronize","hipMemcpy","hipFree","hipFreeArray","free"],
-	"hipMalloc3DArray":["hipMemcpy3D","hipBindTextureToArray","hipDeviceSynchronize","hipModuleLaunchKernel","hipMemcpy","hipFree","hipFreeArray","free"]	
+	"hipMalloc3DArray":["hipMemcpy3D","hipBindTextureToArray","hipDeviceSynchronize","hipModuleLaunchKernel","hipMemcpy","hipFree","hipFreeArray","free"],
+	"hipEnvVarDriver":["hipDeviceGet","hipDeviceGetPCIBusId"]
 
 	
 		

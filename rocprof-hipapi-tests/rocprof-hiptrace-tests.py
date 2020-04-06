@@ -1,16 +1,30 @@
 import os, sys, re, itertools, subprocess, shutil, json
 import texttable as tt
+from prettytable import PrettyTable
+
+
+
+if len(sys.argv) != 2:
+    print("Please make sure you have entered HIP path, eg:/home/taccuser/HIP/")
+    sys.exit(1)
+
+
 
 HOME = os.environ['HOME']
-hippath = HOME + "/HIP_Test/HIP/tests/src/"
+hippath = HOME + "%s/tests/src/" %sys.argv[1]
 destfolder = HOME + "/rocprof-hiptrace-tests"
 binaryfolder = HOME + "/rocprof-hiptrace-tests/hiptrace-binaries/"
 directed_binaries = destfolder + "/directed_binaries"
 hiptrace_outdir = HOME + "/rocprof-hiptrace-output"
 hipapi_trace_folders = []
 conf_path= "./conf.json"
+y = []
 tab = tt.Texttable()
 x = [[]]
+tottests=[]
+totresults=[]
+z = PrettyTable()
+z.field_names = ["TotalTests","TotalPass","TotalFail"]
 makefile_content = """
 ROOT_PATH = /opt/rocm
 LIB_PATH  = $(ROOT_PATH)/lib
@@ -39,6 +53,9 @@ clean:
 	rm -f $(HIP_PATH)/src/*.o
 """
 
+
+
+
 def remove_hiptrace_outputdir():
     if os.path.exists("%s" %hiptrace_outdir):
         print(hiptrace_outdir)
@@ -56,9 +73,11 @@ def create_makefile():
     text_file.close()
 
 
+
 def hip_load_conf(var):
     config = json.loads(open(conf_path).read())
     return config["%s" %var]
+
 
 
 #copy all 148 directed hip api cpp files in generic folder
@@ -80,6 +99,7 @@ def rocprof_copy_hipcpp():
                     print("directed binaries folder doesn't exist")
 
 
+
 def rocprof_run_binary():
     os.system("mkdir %s" %hiptrace_outdir)
     print(hiptrace_outdir)
@@ -99,101 +119,94 @@ def rocprof_run_binary():
                 hipapi_trace_folders.append(apitracedata_outdir)
 
 
+
 def hip_get_trace_data():
-    #hipapitotrace=['','']
-    rplfolder = ""
-    #for folder in hipapi_trace_folders:
-    filenames= os.listdir(hiptrace_outdir)
-    #print(filenames)
-    #for (path, dirs, files) in os.walk(hiptrace_outdir):
-    #outputpath = hiptrace_outdir + "/" + filenames 
+    rplfolder = ""    
+    filenames= os.listdir(hiptrace_outdir)   
     testnum = 0
     for subfolder in filenames:
         outputpath = hiptrace_outdir + "/" + subfolder
-        #print(outputpath)
         inputdir = []
         inputfiles = []
         count = 0
-        for (path, dirs, files) in os.walk(outputpath):
-            #print(files)          
-            #print(dirs)
-            #print(files)
+        for (path, dirs, files) in os.walk(outputpath):                     
             inputfiles.append(files)
             inputdir.append(dirs)            
-            count += 1
-        #print(count)
-        #s_no = subfolder.split("-")[2]
-        testcase_name = subfolder.split("-")[1]
+            count += 1              
+        testcase_name = subfolder
         testnum = testnum + 1
         if count > 3:
-            #print("two rpl folders")
-            hiptracefile = outputpath + "/" + inputdir[0][0] + "/" + str(inputdir[1][0]) + "/hip_api_trace.txt"
-            #print(hiptracefile)
-            hip_get_trace_api(subfolder,hiptracefile)
+            print("two rpl folders")
+            hiptracefile = outputpath + "/" + inputdir[0][0] + "/" + str(inputdir[1][0]) + "/hip_api_trace.txt"            
+            #hip_get_trace_api(subfolder,hiptracefile)
             x.append([s_no,"rocprof-hiptrace-" + testcase_name,hip_get_trace_api(subfolder,hiptracefile)])
         else:            
-            print("one rpl folders")
-            #print(inputfiles[2])
-            #print(inputfiles[2][1])
+            print("one rpl folders")       
             hiptracefile = outputpath + "/" + inputdir[0][0] + "/" + inputdir[1][0] + "/hip_api_trace.txt"
-            hip_get_trace_api(subfolder,hiptracefile)
-            x.append([testnum,"rocprof-hiptrace-" + testcase_name + str(testnum),hip_get_trace_api(subfolder,hiptracefile)])
-
+            #hip_get_trace_api(subfolder,hiptracefile)
+            result = hip_get_trace_api(subfolder,hiptracefile)
+            x.append([testnum,"rocprof-hiptrace-" + testcase_name + "-" + str(testnum),result])
+            totresults.append(result)
+            tottests.append(testnum)    
     tab.add_rows(x)
     tab.set_cols_align(['r','r','r'])
     tab.header(['S.no', 'HIPTrace-HIPApi-TestCase Names', 'Result'])
     print(tab.draw())
 
 
+
 def hip_get_trace_api(test,path):
-    #print(test)
-    #api = test.split("/")[3]
     res = ""
-    try:
-        apiname = test.split("-")[1]
-        #print(apiname)
+    try:        
+        apiname = test
         result = []
         try:
             print(path)            
-            try:
-                apis = hip_load_conf(apiname)
-            except:
-                apis = hip_load_conf("hip_apis")
-
+            apis = hip_load_conf(test)
             for i in apis:
                 with open(path, "r") as f:
                     if i in f.read():
-                        #print("pass")
+                        print("pass")
                         print(i)
                         result.append("pass")
                     else:                        
-                        #print("fail")
+                        print("fail")
+                        print(i)
                         result.append("fail")
         except FileNotFoundError:
             print("File does not exist")
+            res="Fail"
             pass
         except:
+            res="Fail"
             print("Other error")
-        for i in result:
-            print(i)
         if "fail" in result:
             print(test + ": Failed")
             res = "Fail"
         else:
             print(test + ": Passed")
-            res = "Pass"
-        return res
+            res = "Pass"        
     except:
         res = "Fail"
         print("Other error")
-
-        #rpldata = os.path.join(subfolder, str(", ".join(inputdir[0])))
-        #print(rpldata)
-        #hiptrace_dir = os.path.join(rpldata, str(", ".join(inputdir[1])))
-        #hiptrace_file = hiptrace_dir + "/hip_api_trace.txt"
-        #print(hiptrace_file)
+    return res
         
-        #with open(hiptrace_file, "r") as file:
+
+        
+def hiptrace_print_summary():   
+    totpass=[]
+    totfail=[]
+    for i in totresults:
+        if i == "Pass":
+            totpass.append(i)
+        else:
+            totfail.append(i)
+    z.add_row([len(tottests), len(totpass), len(totfail)])
+    print(z)
+        
+
+
+
         
 
 
@@ -203,4 +216,5 @@ def hip_get_trace_api(test,path):
 #rocprof_copy_hipcpp()
 #rocprof_run_binary()
 hip_get_trace_data()
+hiptrace_print_summary()
 #hip_get_trace_api()
