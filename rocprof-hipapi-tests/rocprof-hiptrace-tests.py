@@ -28,6 +28,11 @@ tottests=[]
 totresults=[]
 z = PrettyTable()
 z.field_names = ["TotalTests","TotalPass","TotalFail"]
+
+
+
+
+
 makefile_content = """
 ROOT_PATH = /opt/rocm
 LIB_PATH  = $(ROOT_PATH)/lib
@@ -93,25 +98,10 @@ def rocprof_copy_hipcpp():
             os.system("cd %s && mkdir -p directed_binaries" %destfolder)
         except:
             pass
-        print("Hello")
-        print(hippath)
-        for (path, dirs, files) in os.walk(hippath):
-            print("os walk")
+        for (path, dirs, files) in os.walk(hippath):            
             for f in files:
-
-                cppfile = path + "/" + f   
-                print(cppfile)
-                print(destfolder)
-                os.system("cp {cppfile} {destfolder}".format(cppfile=cppfile,destfolder=destfolder))
-                #create_makefile()
-                #if "cpp" in f:
-                    #print(f)
-                    #binfile = f.split(".")[0]
-                    #if os.path.exists(directed_binaries):                   
-                        #os.system("cd {destfolder} && pwd && make sourcecpp={cppfile} targetbinary=directed_binaries/{binfile}".format(cppfile=f,destfolder=destfolder,binfile=binfile))
-                    #else:
-                        #print("directed binaries folder doesn't exist")
-        #create_makefile()
+                cppfile = path + "/" + f 
+                os.system("cp {cppfile} {destfolder}".format(cppfile=cppfile,destfolder=destfolder))                
     except:
         print("error in rocprof_copy_hipcpp")
 
@@ -121,10 +111,7 @@ def rocprof_make():
     try:
         for r, d, f in os.walk(destfolder):
             for item in f:
-                #print(item)
-                #print(item)
                 cppfile = r + item
-                #print(cppfile)
                 if '.cpp' in item:
                     binfile = item.split(".")[0]                    
                     if os.path.exists(directed_binaries):                    
@@ -142,10 +129,8 @@ def rocprof_run_binary():
     try:
         os.system("mkdir -p %s" %hiptrace_outdir)
         print(hiptrace_outdir)
-        testnum = 0
-        print("Hello")
-        for (path, dirs, files) in os.walk(directed_binaries):        
-            print("os.walk")
+        testnum = 0        
+        for (path, dirs, files) in os.walk(directed_binaries):            
             for f in files:
                 testnum = testnum + 1
                 testpath = directed_binaries + "/" + f
