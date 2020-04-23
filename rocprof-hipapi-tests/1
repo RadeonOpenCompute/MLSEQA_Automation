@@ -27,7 +27,7 @@ x = [[]]
 tottests=[]
 totresults=[]
 z = PrettyTable()
-z.field_names = ["TotalTests","TotalPass","TotalFail","Not Supported"]
+z.field_names = ["TotalTests","TotalPass","TotalFail","NotApplicable"]
 
 
 
@@ -101,14 +101,8 @@ def rocprof_copy_hipcpp():
         for (path, dirs, files) in os.walk(hippath):            
             for f in files:
                 cppfile = path + "/" + f
-                print(f)
                 # filter if not line.startswith('?') and string has "hip_"
-                if "hip_" in f or not f.startswith('h'):                    
-                    print(f + " : Not a hip directed test")
-                    if "test_common.h" in f:
-                        os.system("cp {cppfile} {destfolder}".format(cppfile=cppfile,destfolder=destfolder))
-                else:
-                    os.system("cp {cppfile} {destfolder}".format(cppfile=cppfile,destfolder=destfolder))                
+                os.system("cp {cppfile} {destfolder}".format(cppfile=cppfile,destfolder=destfolder))                
     except:
         print("error in rocprof_copy_hipcpp")
 
@@ -147,7 +141,6 @@ def rocprof_run_binary():
                     os.makedirs(apitracedata_outdir, exist_ok=True)
                     os.system("cd %s && sudo /opt/rocm/bin/rocprof --hip-trace -d . -o ./%s_test_case.csv %s" %(apitracedata_outdir,f,testpath))
                     hipapi_trace_folders.append(apitracedata_outdir)
-                    print(apitracedata_outdir)
     except:
         print("error in rocprof_run_binary")
 

@@ -78,7 +78,7 @@
 	"hip_bitextract":["hipMalloc","hipMemcpy","hipModuleLaunchKernel","hipFree","free"],
 	"hip_bitinsert":["hipMalloc","hipMemcpy","hipMemcpy","hipModuleLaunchKernel","hipFree","free"],
 	"hip_brev":["hipMalloc","hipMemcpy","hipModuleLaunchKernel","hipFree","free"],
-	"hip_clz":["hipMalloc","hipMemcpy","hipModuleLaunchKernel","hipFree","free"],
+	"_hip_clz":["hipMalloc","hipMemcpy","hipModuleLaunchKernel","hipFree","free"],
 	"hipComplex":["hipMalloc","hipMemcpy","hipLaunchKernel"],
 	"hipDeviceMalloc":["hipMalloc","hipMemcpy","hipModuleLaunchKernel","hipFree"],
 	"hipDeviceMemcpy":["hipMalloc","hipMemcpy","hipModuleLaunchKernel"],
