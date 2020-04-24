@@ -76,10 +76,13 @@ def remove_hiptrace_outputdir():
     
 
 def create_makefile():
-    os.system("mkdir {destfolder} && touch {destfolder}/Makefile".format(destfolder=destfolder))
-    text_file = open(destfolder + "/Makefile", "w")    
-    n = text_file.write(makefile_content)
-    text_file.close()
+    try:
+        os.system("touch {destfolder}/Makefile".format(destfolder=destfolder))
+        text_file = open(destfolder + "/Makefile", "w")    
+        n = text_file.write(makefile_content)
+        text_file.close()
+    except:
+        print("error in create makefile")
 
 
 
@@ -94,21 +97,29 @@ def rocprof_copy_hipcpp():
     try:
         print(directed_binaries)
         try:
-            os.system("cd %s && mkdir -p %s && mkdir -p %s" %(HOME,destfolder,directed_binaries))
-            os.system("cd %s && mkdir -p directed_binaries" %destfolder)
+            if os.path.exists("%s" %destfolder):
+                print("folder deleted")
+                os.system("sudo rm -r %s" %hiptrace_outdir)
+                os.system("cd %s && mkdir %s && mkdir  %s" %(HOME,destfolder,directed_binaries))
+                os.system("cd %s && mkdir -p directed_binaries" %destfolder)
+            else:
+                print("folder not deleted")
+                os.system("cd %s && mkdir %s && mkdir  %s" %(HOME,destfolder,directed_binaries))
+                os.system("cd %s && mkdir -p directed_binaries" %destfolder)
         except:
-            pass
+            print("cannot create directed_binaries folder")
         for (path, dirs, files) in os.walk(hippath):            
             for f in files:
                 cppfile = path + "/" + f
                 print(f)
+                os.system("cp {cppfile} {destfolder}".format(cppfile=cppfile,destfolder=destfolder))
                 # filter if not line.startswith('?') and string has "hip_"
-                if "hip_" in f or not f.startswith('h'):                    
-                    print(f + " : Not a hip directed test")
-                    if "test_common.h" in f:
-                        os.system("cp {cppfile} {destfolder}".format(cppfile=cppfile,destfolder=destfolder))
-                else:
-                    os.system("cp {cppfile} {destfolder}".format(cppfile=cppfile,destfolder=destfolder))                
+                #if "hip_" in f or not f.startswith('h'):                    
+                    #print(f + " : Not a hip directed test")
+                    #if "test_common" or "is_callable_test" or "gxxApi1" or "hc_am" or "hip_runtime" or "gxxHipApi" or "clara" in f:
+                        #os.system("cp {cppfile} {destfolder}".format(cppfile=cppfile,destfolder=destfolder))
+                #else:
+                    #os.system("cp {cppfile} {destfolder}".format(cppfile=cppfile,destfolder=destfolder))                
     except:
         print("error in rocprof_copy_hipcpp")
 
@@ -121,12 +132,15 @@ def rocprof_make():
                 cppfile = r + item
                 if '.cpp' in item:
                     binfile = item.split(".")[0]                    
-                    if os.path.exists(directed_binaries):                    
-                        os.system("cd {destfolder} && pwd && make sourcecpp={cppfile} targetbinary=directed_binaries/{binfile}".format(cppfile=cppfile,destfolder=destfolder,binfile=binfile))
+                    #if os.path.exists(directed_binaries):
+                    if "hip_" in item or not item.startswith('h'):
+                        print(item + " : Not a hip directed test")
                     else:
-                        os.system("mkdir {destfolder}/directed_binaries/".format(destfolder=destfolder))
-                        os.system("cd {destfolder} && pwd && make sourcecpp={cppfile} targetbinary=directed_binaries/{binfile}".format(cppfile=f,destfolder=destfolder,binfile=binfile))
-                        print("directed binaries folder doesn't exist")
+                            os.system("cd {destfolder} && pwd && make sourcecpp={cppfile} targetbinary=directed_binaries/{binfile}".format(cppfile=cppfile,destfolder=destfolder,binfile=binfile))
+                    #else:
+                        #os.system("mkdir {destfolder}/directed_binaries/".format(destfolder=destfolder))
+                        #os.system("cd {destfolder} && pwd && make sourcecpp={cppfile} targetbinary=directed_binaries/{binfile}".format(cppfile=f,destfolder=destfolder,binfile=binfile))
+                        #print("directed binaries folder doesn't exist")
     except:
         print("error in the code")
 
@@ -258,9 +272,9 @@ def hiptrace_print_summary():
 
 
 
-remove_hiptrace_outputdir()
-rocprof_copy_hipcpp()
-rocprof_make()
+#remove_hiptrace_outputdir()
+#rocprof_copy_hipcpp()
+#rocprof_make()
 rocprof_run_binary()
 hip_get_trace_data()
 hiptrace_print_summary()
