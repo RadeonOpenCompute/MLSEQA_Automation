@@ -65,13 +65,16 @@ clean:
 
 
 def remove_hiptrace_outputdir():
-    if os.path.exists("%s" %hiptrace_outdir):
-        print(hiptrace_outdir)
-        os.system("sudo rm -r %s" %hiptrace_outdir)
-        os.system("mkdir -p %s" %hiptrace_outdir)
-    else:
-        os.system("mkdir -p %s" %hiptrace_outdir)
-        print("Hip trace output folder not exist so creating new")
+    try:
+        if os.path.exists("%s" %hiptrace_outdir):
+            print(hiptrace_outdir)
+            os.system("sudo rm -r %s" %hiptrace_outdir)
+            os.system("mkdir -p %s" %hiptrace_outdir)
+        else:
+            os.system("mkdir -p %s" %hiptrace_outdir)
+            print("Hip trace output folder not exist so creating new")
+    except:
+        print("error in remove_hiptrace_outputdir")
         
     
 
@@ -272,9 +275,9 @@ def hiptrace_print_summary():
 
 
 
-#remove_hiptrace_outputdir()
-#rocprof_copy_hipcpp()
-#rocprof_make()
+remove_hiptrace_outputdir()
+rocprof_copy_hipcpp()
+rocprof_make()
 rocprof_run_binary()
 hip_get_trace_data()
 hiptrace_print_summary()
