@@ -242,9 +242,12 @@ def hip_get_trace_api(test,path):
         if "fail" in result:
             print(test + ": Failed")
             res = "Fail"
+	elif "pass" in result:
+	    print(test + ": Passed")
+            res = "Pass"
         else:
-            print(test + ": Passed")
-            res = "Pass"        
+            print(test + ": Failed")
+            res = "Fail"        
     except:
         res = "Fail"
         print("Other error")
