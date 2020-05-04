@@ -187,10 +187,13 @@ def hip_get_trace_data():
             testnum = testnum + 1
             if count > 3:
                 print("two rpl folders")
+                print(inputdir[0])
+                print(inputdir[1])
                 hiptracefile = outputpath + "/" + inputdir[0][0] + "/" + str(inputdir[1][0]) + "/hip_api_trace.txt"
                 x.append([s_no,"rocprof-hiptrace-" + testcase_name,hip_get_trace_api(subfolder,hiptracefile)])
                 print("Contains two rpl folders, please make sure only one rpl folder present")
-                exit()
+                totresults.append(result)
+                #exit()
             else:
                 print("one rpl folders")
                 if "Tex" in testcase_name:
@@ -242,12 +245,12 @@ def hip_get_trace_api(test,path):
         if "fail" in result:
             print(test + ": Failed")
             res = "Fail"
-	elif "pass" in result:
-	    print(test + ": Passed")
-            res = "Pass"
-        else:
+        elif len(result) == 0:
             print(test + ": Failed")
-            res = "Fail"        
+            res = "Fail"
+        else:
+            print(test + ": Passed")
+            res = "Pass"        
     except:
         res = "Fail"
         print("Other error")
@@ -278,10 +281,10 @@ def hiptrace_print_summary():
 
 
 
-remove_hiptrace_outputdir()
-rocprof_copy_hipcpp()
-rocprof_make()
-rocprof_run_binary()
+#remove_hiptrace_outputdir()
+#rocprof_copy_hipcpp()
+#rocprof_make()
+#rocprof_run_binary()
 hip_get_trace_data()
 hiptrace_print_summary()
 
