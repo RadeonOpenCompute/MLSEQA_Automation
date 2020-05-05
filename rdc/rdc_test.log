@@ -1,0 +1,18 @@
+2020-05-05 15:14:10.248 :starting test suite
+2020-05-05 15:14:10.248 :Started running RDC test cases
+2020-05-05 15:14:10.248 :Entered test: rdc_service_start_test_1
+2020-05-05 15:14:10.248 :error in rdc_service_start
+2020-05-05 15:14:10.248 :error in rdc_service_start
+Traceback (most recent call last):
+  File "rdc_tests.py", line 40, in rdc_service_start
+    res = os.popen("{command}".filter(command = cmnd)).read()
+AttributeError: 'str' object has no attribute 'filter'
+2020-05-05 15:14:27.692 :starting test suite
+2020-05-05 15:14:27.692 :Started running RDC test cases
+2020-05-05 15:14:27.692 :Entered test: rdc_service_start_test_1
+2020-05-05 15:14:27.692 :error in rdc_service_start
+2020-05-05 15:14:27.692 :error in rdc_service_start
+Traceback (most recent call last):
+  File "rdc_tests.py", line 40, in rdc_service_start
+    res = os.popen("{command}".filter(command = cmnd)).read()
+AttributeError: 'str' object has no attribute 'filter'
