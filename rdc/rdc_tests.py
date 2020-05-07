@@ -11,6 +11,7 @@ import texttable as tt
 HOME = os.environ['HOME']
 tab = tt.Texttable()
 x = [[]]
+results=[]
 logger = logging.getLogger(__name__)
 #file_handler = logging.FileHandler('rdc_test.log')
 logging.basicConfig(
@@ -28,8 +29,8 @@ test_names = ["rdc_service_start_test_1",
         "rdc_list_gpu_group_test_6",        
         "rdc_attach_gpu_to_group_test_7",
         "rdc_delete_gpu_group_test_8",
-        "rdc_stats_create_job_test_9",
-        "rdc_stats_stop_job_test_10",
+        "rdc_stats_job_create_test_9",
+        "rdc_stats_job_stop_test_10",
         "rdc_stats_show_summary_test_11",
         "rdc_fieldgroup_create_test_12",
         "rdc_fieldgroup_list_test_13",
@@ -46,15 +47,15 @@ test_commands = {"rdc_service_start_test_1":'sudo systemctl start rdc',
         "rdc_discover_gpu_test_4":'cd /home/taccuser/rdc/rdc/build && echo "AH64_uh1" | sudo -S LD_LIBRARY_PATH=$PWD/rdc_libs/ ./rdci/rdci discovery --host singularity-node.amd.com:50051 -u -l',
         "rdc_create_gpu_group_test_5":'rdci group -c GPU_GRP --host singularity-node.amd.com:50051 -u',
         "rdc_list_gpu_group_test_6":'rdci group --host singularity-node.amd.com:50051 -u -l',        
-        "rdc_attach_gpu_to_group_test_7":'rdci group -g 10 -a 0 --host singularity-node.amd.com:50051 -u',
-        "rdc_delete_gpu_group_test_8":'rdci group -d 6 --host singularity-node.amd.com:50051 -u',
-        "rdc_stats_create_job_test_9":'rdci stats --host singularity-node.amd.com:50051 -u -g 2 -s 123',
-        "rdc_stats_stop_job_test_10":'rdci stats --host singularity-node.amd.com:50051 -u -g 2 -x 123',
+        "rdc_attach_gpu_to_group_test_7":'rdci group -g 13 -a 0 --host singularity-node.amd.com:50051 -u',
+        "rdc_delete_gpu_group_test_8":'rdci group -d 3 --host singularity-node.amd.com:50051 -u',
+        "rdc_stats_job_create_test_9":'rdci stats --host singularity-node.amd.com:50051 -u -g 13 -s 123',
+        "rdc_stats_job_stop_test_10":'rdci stats --host singularity-node.amd.com:50051 -u -g 13 -x 123',
         "rdc_stats_show_summary_test_11":'rdci  stats --host singularity-node.amd.com:50051 -u -j 123',
         "rdc_fieldgroup_create_test_12":'rdci fieldgroup --host singularity-node.amd.com:50051 -u -c mg -f 50',
         "rdc_fieldgroup_list_test_13":'rdci fieldgroup --host singularity-node.amd.com:50051 -u -l',
-        "rdc_fieldgroup_viewinfo_test_14":'rdci fieldgroup --host singularity-node.amd.com:50051 -u -g 1 -i',
-        "rdc_fieldgroup_delete_test_15":'rdci fieldgroup --host singularity-node.amd.com:50051 -u -d 1',
+        "rdc_fieldgroup_viewinfo_test_14":'rdci fieldgroup --host singularity-node.amd.com:50051 -u -g 14 -i',
+        "rdc_fieldgroup_delete_test_15":'rdci fieldgroup --host singularity-node.amd.com:50051 -u -d 14',
         "rdc_monitor_telemetry_test_16":'rdci dmon --host singularity-node.amd.com:50051 -u -e 50 -i 0 -c 5 -d 1000',
         "rdc_connect_with_auth_test_17":'rdci discovery --host singularity-node.amd.com:50051 -l',
         "rdc_connect_without_auth_test_18":'rdci discovery --host singularity-node.amd.com:50051 -u -l'
@@ -80,6 +81,11 @@ def rdc_service_start(tstname, cmnd, tstnum):
     except:
         logger.error("error in rdc_service_start")
         logger.exception("error in rdc_service_start")
+
+
+
+
+#def rdc_discover_group_gpu(tstname,cmnd,test_string,testnum):
 
 
 def rdc_discover_group_gpu(tstname,cmnd,test_string,testnum):
@@ -146,10 +152,10 @@ def rdc_run_tests():
             elif tstname == "rdc_delete_gpu_group_test_8":
                 test_string = "Successfully deleted the group"
                 rdc_discover_group_gpu(tstname,command,test_string,testnum)
-            elif tstname == "rdc_stats_create_job_test_9":
+            elif tstname == "rdc_stats_job_create_test_9":
                 test_string = "Successfully started recording job"
                 rdc_discover_group_gpu(tstname,command,test_string,testnum)
-            elif tstname == "rdc_stats_stop_job_test_10":
+            elif tstname == "rdc_stats_job_stop_test_10":
                 test_string = "Successfully stopped recording job"
                 rdc_discover_group_gpu(tstname,command,test_string,testnum)
             elif tstname == "rdc_stats_show_summary_test_11":
@@ -181,6 +187,7 @@ def rdc_run_tests():
         tab.set_cols_align(['r','r','r'])
         tab.header(['S.no', 'RDC-TestCases', 'Result'])
         print(tab.draw())
+        summary_result()
         #print(pt)
        
     except:
@@ -211,6 +218,7 @@ def logger_pass(test_string,command,testnum):
         logger.error('Run Command : %s'%command)
         logger.info('Test: %s is Passed'%test_string)
         x.append([testnum,test_string,"PASS"])
+        results.append("pass")
     except:
         print("error in logger_pass")
 
@@ -224,8 +232,24 @@ def logger_fail(test_string,command,testnum):
         logger.info('Test: %s is Failed'%test_string)
         logger.info('\n')
         x.append([testnum,test_string,"FAIL"])
+        results.append("fail")
     except:
         print("error in logger_fail")
+
+def summary_result():
+    z = PrettyTable()
+    z.field_names = ["TotalTests","TotalPass","TotalFail"]
+    totpass=[]
+    totfail=[]    
+    for i in results:
+        if i == "pass":
+            totpass.append(i)        
+        elif i == "fail":
+            totfail.append(i)
+        else:
+            print("Notmentioned")
+    z.add_row([len(results), len(totpass), len(totfail)])
+    print(z)
 
 def main():
     start = datetime.now()
