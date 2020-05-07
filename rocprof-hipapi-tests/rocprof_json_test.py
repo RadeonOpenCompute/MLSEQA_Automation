@@ -6,6 +6,41 @@ from prettytable import PrettyTable
 
 output_file = "/home/taccuser/json_test_case_1/rocprof_hcc_trace_test_case_1.json"
 
+def rocprof_json_file_validate():
+    try:
+        count = 0
+        with open(output_file, "r") as file:            
+            for line in file:
+                count = count + 1
+            if count > 0:
+                print("File_content_test : Pass")
+            else:
+                print("File_content_test : Fail")
+    except:
+        print("error in rocprof_json_file_validate")
+
+
+def rocprof_json_function_validate():
+    try:
+        cpu=0
+        copy=0
+        gpu=0
+        with open(output_file, "r") as file:
+            for line in file:
+                if '{"name' in line:
+                    if "CPU HIP API" in line:                        
+                        cpu = cpu + 1
+                    elif "COPY" in line:                        
+                        copy = copy + 1
+                    elif "GPU0" in line:
+                        gpu = gpu + 1
+            if cpu > 0 and copy > 0 and gpu > 0:
+                print("Json_function_validate : Pass")
+            else:
+                print("Json_function_validate : Fail")
+    except:
+        print("error in rocprof_json_function_validate")
+
 
 def rocprof_json_time_parser():
     try:
@@ -20,13 +55,13 @@ def rocprof_json_time_parser():
                         beginNS_result.append("Fail")
                     else:
                         beginNS_result.append("Pass")
-                if "EndNs" in line:
+                elif "EndNs" in line:
                     endNS_value = int(line.split(":")[1].replace('"','').replace(',',''))
                     if endNS_value <= 0:
                         endNS_result.append("Fail")
                     else:
                         endNS_result.append("Pass")
-                if "DurationNs" in line:
+                elif "DurationNs" in line:
                     durationNS_value = int(line.split(":")[1].replace('"',''))
                     if durationNS_value <= 0:
                         durationNS_result.append("Fail")
@@ -54,6 +89,6 @@ def rocprof_json_time_parser():
 
 
 
-
-
-rocprof_json_time_parser()
+rocprof_json_function_validate()
+#rocprof_json_file_validate()
+#rocprof_json_time_parser()
