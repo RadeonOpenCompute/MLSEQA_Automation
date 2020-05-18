@@ -1,10 +1,65 @@
-import os, sys, re, itertools, subprocess
+import os, sys, re, itertools, subprocess, json
 from subprocess import PIPE, run
 from prettytable import PrettyTable
+#import dpath.util
+#import pandas as pd
+
+
+#output_file = "/home/taccuser/json_test_case_1/rocprof_hcc_trace_test_case_1.json"
+
+output_file = "/rocprof_hcc_trace_test_case_1/rocprof_hcc_trace_test_case_1.json"
 
 
 
-output_file = "/home/taccuser/json_test_case_1/rocprof_hcc_trace_test_case_1.json"
+
+
+def rocprof_json_check_args():
+    try:
+       #count = 0
+       #with open(output_file, "r") as f:
+           
+           #print("Hi")
+           #print(extract_element_from_json(f, ["traceEvents","args","pid"]))
+           #df = pd.read_json(f)
+           #print(df)
+           #data = json.loads(f)
+       phstr = '"ph":"X"'
+       f = open(output_file,"r")
+       print("Hi")
+       j = json.loads(f.read())
+       print(j['traceEvents'][1]['args']['name'])
+       count = 0
+       for i in j['traceEvents']:
+           #print(j[i]['name'])
+           if "" not in i:
+               print("entered args")
+               print(i[name])
+               #print(i.items())    
+           
+               #print(j['traceEvents'][count]['ph']['name'])
+           count = count + 1
+               #print(j[i]['Name'])
+               #h = json.loads(i.read())
+               #print(h['Name'])
+
+
+           #print(j['traceEvents'][i]['args'])
+       
+       #print(j['traceEvents']['args'])
+       #for i in j['traceEvents']['args']:
+           #print(i)
+       
+       #print(j)
+       #for each in j['traceEvents']['args']:
+           #print(each['name'])
+           
+
+
+    except:
+       print("error in rocprof_json_check_args()")
+            
+
+
 
 def rocprof_json_file_validate():
     try:
@@ -89,6 +144,7 @@ def rocprof_json_time_parser():
 
 
 
-rocprof_json_function_validate()
+#rocprof_json_function_validate()
 #rocprof_json_file_validate()
 #rocprof_json_time_parser()
+rocprof_json_check_args()
