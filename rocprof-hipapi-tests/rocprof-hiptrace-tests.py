@@ -281,10 +281,10 @@ def hiptrace_print_summary():
 
 
 
-#remove_hiptrace_outputdir()
-#rocprof_copy_hipcpp()
-#rocprof_make()
-#rocprof_run_binary()
+remove_hiptrace_outputdir()
+rocprof_copy_hipcpp()
+rocprof_make()
+rocprof_run_binary()
 hip_get_trace_data()
 hiptrace_print_summary()
 
