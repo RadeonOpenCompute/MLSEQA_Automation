@@ -1,64 +1,108 @@
-import os, sys, re, itertools, subprocess, json
+import os, sys, re, itertools, subprocess, json, logging
 from subprocess import PIPE, run
 from prettytable import PrettyTable
+
 #import dpath.util
 #import pandas as pd
 
 
 #output_file = "/home/taccuser/json_test_case_1/rocprof_hcc_trace_test_case_1.json"
-
+HOME = os.environ['HOME']
 output_file = "/rocprof_hcc_trace_test_case_1/rocprof_hcc_trace_test_case_1.json"
+output_path = HOME + "/rocprof-json-output"
 
 
 
-
-
-def rocprof_json_check_args():
+def rocprof_pid_checks():    
+    pidnames = {"0 CPU HIP API":"2",
+            "1 COPY":"1",
+            "2 GPU0":"6" }
     try:
+        count = 1
+        with open(output_file, "r") as f:
+            for line in f:                
+                if '"ph":"M"' in line:
+                    print("found args")
+                    count = count + 1
+        print(count)
+        f = open(output_file,"r")       
+        j = json.loads(f.read())
+        i = 1
+        while i < count:          
+          jsonpid = j['traceEvents'][i]['pid']
+          pid = pidnames[j['traceEvents'][i]['args']['name']]          
+         
+          if int(jsonpid) == int(pid):
+              print("Pass")
+          else:
+              print("Fail")            
+          i += 1                
+    except:
+        print("error in rocprof_pid_checks")
+
+
+def rocprof_kernel_checks():
+    try:
+        f = open(output_file,"r")
+        j = json.loads(f.read())
+        for i in j['traceEvents']:
+            kernelname = i.get('name')
+            #print(kernelname)
+            if kernelname == "hipModuleLaunchKernel":
+                print(kernelname)
+                print(i.get('args', {}).get('args'))
+               
+    except:
+        print("error in rocprof_kernel_checks")
+
+
+def rocprof_check_args():
+    try:
+       result = []       
+       #phstr = '"ph":"X"'
+       f = open(output_file,"r")      
+       j = json.loads(f.read())       
+       #print(j['traceEvents'][1]['args']['name'])
+       #print(j['traceEvents'][2]['args']['name'])
+       #print(j['traceEvents'][3]['args']['name'])
+       #print(j['traceEvents'][4]['args']['name'])
        #count = 0
-       #with open(output_file, "r") as f:
-           
-           #print("Hi")
-           #print(extract_element_from_json(f, ["traceEvents","args","pid"]))
-           #df = pd.read_json(f)
-           #print(df)
-           #data = json.loads(f)
-       phstr = '"ph":"X"'
-       f = open(output_file,"r")
-       print("Hi")
-       j = json.loads(f.read())
-       print(j['traceEvents'][1]['args']['name'])
-       count = 0
-       for i in j['traceEvents']:
-           #print(j[i]['name'])
-           if "" not in i:
-               print("entered args")
-               print(i[name])
-               #print(i.items())    
-           
-               #print(j['traceEvents'][count]['ph']['name'])
-           count = count + 1
-               #print(j[i]['Name'])
-               #h = json.loads(i.read())
-               #print(h['Name'])
-
-
-           #print(j['traceEvents'][i]['args'])
-       
-       #print(j['traceEvents']['args'])
-       #for i in j['traceEvents']['args']:
-           #print(i)
-       
-       #print(j)
-       #for each in j['traceEvents']['args']:
-           #print(each['name'])
-           
-
+       for i in j['traceEvents']:                       
+           pid = i.get('pid')
+           if pid == None:
+               continue
+           elif pid == 0:
+               print("entered six")
+               print(i.get('args'))
+               apiname = i.get('name')
+               if i.get('args') == None:                   
+                   print("HIP API %s : Fail"%apiname)
+                   result.append("Fail")
+                   logger.info('[HIP API] [%s] has no arguments: Fail'%(apiname))                  
+               else:
+                   print("HIP API %s has arguments: Pass"%apiname)
+                   result.append("Pass")         
 
     except:
        print("error in rocprof_json_check_args()")
-            
-
+   
+         
+def load_defaults():
+    global pt,tab,x,logger,start
+    start=datetime.now()
+    logger = logging.getLogger(__name__)
+    #file_handler = logging.FileHandler('rdc_test.log')
+    logging.basicConfig(
+            level=logging.DEBUG,
+            format='%(asctime)s.%(msecs)03d :%(message)s',
+            datefmt ='%Y-%m-%d %H:%M:%S',
+            filename = output_path + '/rocprof_jsontest.log',
+            filemode ='w'
+    )
+    pt = PrettyTable()
+    pt.field_names = ["S.no","Test_name","Status"]
+    pt.align["Test_name"] = "l"
+    pt.align["Status"] = "l"
 
 
 def rocprof_json_file_validate():
@@ -73,6 +117,7 @@ def rocprof_json_file_validate():
                 print("File_content_test : Fail")
     except:
         print("error in rocprof_json_file_validate")
+
 
 
 def rocprof_json_function_validate():
@@ -143,8 +188,10 @@ def rocprof_json_time_parser():
 
 
 
-
+#load_defaults()
 #rocprof_json_function_validate()
 #rocprof_json_file_validate()
 #rocprof_json_time_parser()
-rocprof_json_check_args()
+#rocprof_check_args()
+#rocprof_pid_checks()
+rocprof_kernel_checks()
