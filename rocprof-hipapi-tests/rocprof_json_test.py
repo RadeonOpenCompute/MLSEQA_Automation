@@ -8,7 +8,7 @@ from prettytable import PrettyTable
 
 #output_file = "/home/taccuser/json_test_case_1/rocprof_hcc_trace_test_case_1.json"
 HOME = os.environ['HOME']
-output_file = "/rocprof_hcc_trace_test_case_1/rocprof_hcc_trace_test_case_1.json"
+output_file = "/rocprof_hcc_trace_test_case_1/rocprof_hcc_trace_test_case_2.json"
 output_path = HOME + "/rocprof-json-output"
 
 
@@ -41,6 +41,20 @@ def rocprof_pid_checks():
         print("error in rocprof_pid_checks")
 
 
+def rocprof_stream_checks():
+    try:
+        f = open(output_file,"r")
+        j = json.loads(f.read())
+        for i in j['traceEvents']:
+            print(i)
+            if 'stream' in i:
+                print(i)
+                print(i.get('args', {}).get('args'))                       
+   
+    except:
+        print("error in rocprof_stream_checks")
+
+
 def rocprof_kernel_checks():
     try:
         f = open(output_file,"r")
@@ -61,12 +75,7 @@ def rocprof_check_args():
        result = []       
        #phstr = '"ph":"X"'
        f = open(output_file,"r")      
-       j = json.loads(f.read())       
-       #print(j['traceEvents'][1]['args']['name'])
-       #print(j['traceEvents'][2]['args']['name'])
-       #print(j['traceEvents'][3]['args']['name'])
-       #print(j['traceEvents'][4]['args']['name'])
-       #count = 0
+       j = json.loads(f.read())              
        for i in j['traceEvents']:                       
            pid = i.get('pid')
            if pid == None:
@@ -194,4 +203,5 @@ def rocprof_json_time_parser():
 #rocprof_json_time_parser()
 #rocprof_check_args()
 #rocprof_pid_checks()
-rocprof_kernel_checks()
+#rocprof_kernel_checks()
+rocprof_stream_checks()
