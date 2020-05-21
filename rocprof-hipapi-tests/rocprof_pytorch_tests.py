@@ -29,7 +29,7 @@ from common.artifactorypath import Common as cm
 from common.artifactorypath import FileInfo
 auto = cm()
 import common.upload_db as db
-auto.Initialzation('rocprof_pytorch_tests.py')
+auto.Initialzation('rocprof_pytorch_tests')
 HTML = '''
 <html>
 <head>
@@ -588,18 +588,19 @@ def Final_summary(pt):
     Final.add_row([' ',total_tests,passcount,failcount])
     return Final
 
+
 commands1 = {
     "rocprof_pyt_sys_trace_mgpu_test_case_1":'HIP_VISIBLE_DEVICES=0,1,2,3 WORLD_SIZE=4 TEMP_DIR=/tmp BACKEND=nccl /opt/rocm/bin/rocprof -d $PWD/rocprof_pyt_sys_trace_mgpu_test_case_1 --sys-trace python3.6 $PWD/pytorch/test/test_distributed.py --verbose TestDistBackend.test_all_gather_multigpu'
 }
 
 def rocprof_run_systest():
-    #logger.info('Entering %s'%inspect.stack()[0][3])
+    logger.info('Entering %s'%inspect.stack()[0][3])
     ##print test.tests
     t_iter=0
     global test_string,steps,pt,command
     searchObj = None
     test_string="rocprof_pyt_sys_trace_mgpu_test_case_1"
-    output_path = "$PWD/rocprof_pyt_sys_trace_mgpu_test_case_1"
+    output_path = "/rocprof_pyt_sys_trace_mgpu_test_case_1"
     #print len(test.tests)
     try:
        #for t_iter in range (len(test.tests)):
@@ -626,7 +627,7 @@ def rocprof_run_systest():
            print("hsatrace_file")
            for line in f:
                num_lines += 1
-       if num_lines > 1:        
+       if num_lines > 1:
            #print "searchObj.group() : ", searchObj;
            fo.write("\n[STEP_%.3d]\nDescription=%s\nStatus=Passed\n"\
            %(steps,test_string))
@@ -657,7 +658,7 @@ def main():
     if not copy_pyt_bench_files():                                    
         print('copy_pyt_bench_files fails, first fix this.\n')
         exit()
-    #rocprof_run_tests(options)
+    rocprof_run_tests(options)
     rocprof_run_systest()
     #roctracer_test()
     total = Final_summary(pt)
@@ -674,17 +675,17 @@ def main():
         try:
             Apath.Auto_save(FileInfo['name'],FileInfo['logpath'])
             try:
-                db.update_or_create('rocm_tools', 'rocprof_pytorch_tests.py', total_tests, passcount, failcount, endtime, start, Apath.Artifactory_path('rocprof_pytorch_tests.py'))
+                db.update_or_create('rocm_tools', 'rocprof_pytorch_tests', total_tests, passcount, failcount, endtime, start, Apath.Artifactory_path('rocprof_pytorch_tests'))
             except:
                 print('db error')
         except:
             try:
-                db.update_or_create('rocm_tools', 'rocprof_pytorch_tests.py', total_tests, passcount, failcount, endtime, start, "artifactory issue")
+                db.update_or_create('rocm_tools', 'rocprof_pytorch_tests', total_tests, passcount, failcount, endtime, start, "artifactory issue")
             except:
                 print('db error')
     else:
         try:
-            db.update_or_create('rocm_tools', 'rocprof_pytorch_tests.py', total_tests, passcount, failcount, endtime, start, " ")
+            db.update_or_create('rocm_tools', 'rocprof_pytorch_tests', total_tests, passcount, failcount, endtime, start, " ")
         except:
             print('db error')
     if mail != None:
