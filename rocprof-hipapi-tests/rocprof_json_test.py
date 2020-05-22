@@ -8,7 +8,7 @@ from prettytable import PrettyTable
 
 #output_file = "/home/taccuser/json_test_case_1/rocprof_hcc_trace_test_case_1.json"
 HOME = os.environ['HOME']
-output_file = "/rocprof_hcc_trace_test_case_1/rocprof_hcc_trace_test_case_2.json"
+output_file = "/rocprof_hcc_trace_test_case_1/rocprof_hcc_trace_test_case_1.json"
 output_path = HOME + "/rocprof-json-output"
 
 
@@ -43,13 +43,23 @@ def rocprof_pid_checks():
 
 def rocprof_stream_checks():
     try:
-        f = open(output_file,"r")
-        j = json.loads(f.read())
-        for i in j['traceEvents']:
-            print(i)
-            if 'stream' in i:
-                print(i)
-                print(i.get('args', {}).get('args'))                       
+        #f = open(output_file,"r")
+        #j = json.loads(f.read())
+        #for i in j['traceEvents']:
+            #print(i)
+        with open(output_file, "r") as f:
+            for line in f:
+                if 'stream' in line:
+                    #print(line)
+                    m = re.search('stream(((.*)))', line).group(1)
+                    #print(re.search('stream(((.*)))', line).group(1))
+                    #str1 = str("nill")
+                    if "nill" in m:
+                        print("nill")   
+                    else:
+                        print("not nill")
+                    #print(i)
+                    #print(i.get('args', {}).get('args'))                       
    
     except:
         print("error in rocprof_stream_checks")
