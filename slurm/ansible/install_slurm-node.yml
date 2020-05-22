@@ -380,9 +380,9 @@
   - name: Adding configuration
     lineinfile:
       dest: /etc/slurm/slurm.conf
-      state: present
+      state: absent
       regexp: '^FastSchedule=1'
-      line: 'FastSchedule=2'
+      #line: 'FastSchedule=2'
     become: yes
     become_method: sudo
 
