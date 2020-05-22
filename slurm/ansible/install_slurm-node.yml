@@ -429,8 +429,20 @@
     become_method: sudo
 
 
-
-
+  - name: download gres,cgroups conf files
+    get_url:
+      url: "http://10.128.142.190:8081/artifactory/slurm_amd_plgn_package/{{ item }}"
+      dest: /etc/slurm/
+      url_username: admin
+      url_password: Admin@1234
+    with_items:           
+       - "cgroup.conf"
+       - "cgroup_allowed_devices_file.conf"
+       - "gres.conf"
+    become: yes
+    become_method: sudo
+      
+    
 
   #  - name: install required
   #  apt:
