@@ -224,10 +224,10 @@
       chdir: "/storage"
     with_items:
 
-       - "wget https://download.schedmd.com/slurm/slurm-20.02-latest.tar.bz2"
+            #- "wget https://download.schedmd.com/slurm/slurm-20.02-latest.tar.bz2"
             #- "sudo tar xvjf {{ slurm_version }}.tar.bz2"
-            #- "wget http://10.128.142.190:8081/artifactory/slurm_amd_plgn_package/slurm-20.02-latest.tar.bz2"
-       - "tar -xf slurm-20.02-latest.tar.bz2"
+            - "wget http://10.128.142.190:8081/artifactory/slurm_amd_plgn_package/{{ slurm_pkg }}"
+            - "tar -xf {{slurm_pkg}}"
     become: yes
     become_method: sudo
 
@@ -237,8 +237,8 @@
     args:
       chdir: "/storage/{{ slurm_version }}"
     with_items:
-            #- "make clean"
-       - "./configure --prefix=/tmp/slurm-build --sysconfdir=/etc/slurm --enable-pam --with-pam_dir=/lib/x86_64-linux-gnu/security/ --without-shared-libslurm"
+       - "make clean"
+       - "./configure --prefix=/tmp/slurm-build --sysconfdir=/etc/slurm --enable-pam --with-pam_dir=/lib/x86_64-linux-gnu/security/ --without-shared-libslurm --with-rsmi_dir=/opt/rocm-3.5.0-2272/rocm_smi/"
        - "make"
        - "make contrib"
        - "sudo make install"
@@ -269,9 +269,9 @@
     command: "{{ item }}"
     with_items:
        - "cp /storage/ubuntu-slurm/slurm.conf /etc/slurm/"
-       - "cp /storage/ubuntu-slurm/gres.conf /etc/slurm/gres.conf"
-       - "cp /storage/ubuntu-slurm/cgroup.conf /etc/slurm/cgroup.conf"
-       - "cp /storage/ubuntu-slurm/cgroup_allowed_devices_file.conf /etc/slurm/cgroup_allowed_devices_file.conf"
+         #- "cp /storage/ubuntu-slurm/gres.conf /etc/slurm/gres.conf"
+         #- "cp /storage/ubuntu-slurm/cgroup.conf /etc/slurm/cgroup.conf"
+         #- "cp /storage/ubuntu-slurm/cgroup_allowed_devices_file.conf /etc/slurm/cgroup_allowed_devices_file.conf"
     become: yes
     become_method: sudo
 
