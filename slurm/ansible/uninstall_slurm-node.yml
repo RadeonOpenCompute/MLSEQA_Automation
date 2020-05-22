@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: slurm-node
   #hosts1:10.130.166.205
   #vars:
   #ansible_ssh_user='ansible'
