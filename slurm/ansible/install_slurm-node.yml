@@ -224,20 +224,20 @@
       chdir: "/storage"
     with_items:
 
-            #- "wget https://download.schedmd.com/slurm/{{ slurm_version }}.tar.bz2"
+       - "wget https://download.schedmd.com/slurm/slurm-20.02-latest.tar.bz2"
             #- "sudo tar xvjf {{ slurm_version }}.tar.bz2"
-       - "wget http://10.128.142.190:8081/artifactory/slurm_amd_plgn_package/amd-plugin-mike-wip-v1.tar.gz"
-       - "tar xvzf amd-plugin-mike-wip-v1.tar.gz"
+            #- "wget http://10.128.142.190:8081/artifactory/slurm_amd_plgn_package/slurm-20.02-latest.tar.bz2"
+       - "tar -xf slurm-20.02-latest.tar.bz2"
     become: yes
     become_method: sudo
 
 
-  - name: building slurm
+  - name : compiling, building, installing slurm
     command: "{{ item }}"
     args:
       chdir: "/storage/{{ slurm_version }}"
     with_items:
-       - "make clean"
+            #- "make clean"
        - "./configure --prefix=/tmp/slurm-build --sysconfdir=/etc/slurm --enable-pam --with-pam_dir=/lib/x86_64-linux-gnu/security/ --without-shared-libslurm"
        - "make"
        - "make contrib"
@@ -364,7 +364,7 @@
       dest: /etc/slurm/slurm.conf
       state: present
       regexp: '^SelectType=select/cons_res'
-      line: 'SelectType=select/linear'
+      line: 'SelectType=select/cons_tres'
     become: yes
     become_method: sudo
 
@@ -373,7 +373,7 @@
       dest: /etc/slurm/slurm.conf
       state: present
       regexp: '^SelectTypeParameters=CR_Core_Memory,CR_CORE_DEFAULT_DIST_BLOCK,CR_ONE_TASK_PER_CORE'
-      line: 'SelectTypeParameters=CR_CORE_DEFAULT_DIST_BLOCK,CR_ONE_TASK_PER_CORE'
+      line: 'SelectTypeParameters=CR_Core_Memory,CR_CORE_DEFAULT_DIST_BLOCK,CR_ONE_TASK_PER_CORE'
     become: yes
     become_method: sudo
 

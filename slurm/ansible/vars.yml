@@ -7,6 +7,6 @@ pre_req_softwares: libmunge-dev,libmunge2,munge,git
 pubkey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVrFDZN8yVWx3k0QsTvwwbVjCrFWdOHn1nLMVoE9w1Snfhhb91aCMHoEvo4mkE5a4elo9WJCR7FpuNYeLL7XvsjYsR9nHFIsAlhIKCUGnR1xYfpLB3HkUCOU0kPDUWuQuFmUt8YchjLCxgvqms1FbRgHp6dSYN72/CuwFOCVZONHCmR0tpSLPK0HA+shc+9rZY/DJDnuA6rcHdSxUv78oHebOB/qHTxSgEh8KH89U6jjxhzzf6+PxILHYN7qSbwdQMn6W5vVd3xyTl/pRrdpZJOUVazcyUACqWLrtzZOdKk1f6RpgZIzFIYnxA0ixvkH/zLxGktqKHK7JlsptzdqGL
   planka@amd.com
 slurm_mysql_password: slurmdbpass
-slurm_version: slurm-19.05.0
+slurm_version: slurm-20.02.1
 superuser: ansible
 tools: git,gcc,make,ruby,ruby-dev,libpam0g-dev,libmariadb-client-lgpl-dev,libmysqlclient-dev,rocm-smi-lib64
