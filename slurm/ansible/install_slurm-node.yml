@@ -1,10 +1,12 @@
 ---
 
 - hosts: localhost
-  
+  roles:
+    - kwoodson.yedit
+
   vars_files:
     - ./vars.yml
-  
+
   tasks:
   - name: change munge folder as insecure
     file:
@@ -24,8 +26,6 @@
     become: yes
     become_method: sudo
 
-    
-
   - name: fetch the IP
     shell: "hostname -I | awk '{print $1}'"
     register: ipinfo
@@ -33,16 +33,24 @@
     become_method: sudo
 
   - name: Test for line
-    shell: cat ./vars.yml | grep ip | wc -l
+    shell: cat ./vars.yml | grep masterip | wc -l
     register: test_grep
     become: yes
     become_method: sudo
 
+    #- name: add ip in vars.yml
+    #lineinfile:
+    #dest: ./vars.yml
+    #line: 'masterip: {{ ipinfo.stdout }}'
+    #when: test_grep.stdout == "0"
+    #become: yes
+    #become_method: sudo
+
   - name: add ip in vars.yml
-    lineinfile:
-      dest: ./vars.yml
-      line: 'ip: {{ ipinfo.stdout }}'
-    when: test_grep.stdout == "0"
+    yedit:
+      src: ./vars.yml
+      key: "masterip"
+      value: '{{ ipinfo.stdout }}'
     become: yes
     become_method: sudo
 
@@ -54,32 +62,32 @@
 
 
   - name: Test for line
-    shell: cat ./vars.yml | grep nodehostname | wc -l
+    shell: cat ./vars.yml | grep masterhostname | wc -l
     register: test_grep1
     become: yes
     become_method: sudo
 
 
   - name: add ip in vars.yml
-    lineinfile:
-      dest: ./vars.yml
-      line: 'nodehostname: {{ hostinfo.stdout }}'
-    when: test_grep1.stdout == "0"
+    yedit:
+      src: ./vars.yml
+      key: "masterhostname"
+      value: '{{ hostinfo.stdout }}'
     become: yes
     become_method: sudo
 
 
-    #- name: copy latest munge key to node folder
-    #copy: 
-    #src: /etc/munge/munge.key
-    #dest: /home/taccuser/MLSEQA_Automation/slurm/ansible/files/etc/munge/
-    #owner: "{{ superuser }}"
-    #group: "{{ superuser }}"
-    #mode: '0755'
-    #become: yes
-    #become_method: sudo
+  - name: copy latest munge key to node folder
+    copy:
+      src: /etc/munge/munge.key
+      dest: ./files/etc/munge/
+      owner: "{{ superuser }}"
+      group: "{{ superuser }}"
+      mode: '0755'
+    become: yes
+    become_method: sudo
 
- 
+
 
 - hosts: slurm-node
     #hosts1:10.130.166.205
@@ -122,13 +130,13 @@
     become: yes
     become_method: sudo
 
-  
+
     #- name: copy file from local host to remote host (relative path, ./files/)
     #copy:
     #src: /etc/munge/munge.key
     #dest: $HOME/test_file
-  
-  
+
+
   - name: copy munge key file to host
     copy:
       src: /etc/munge/munge.key
@@ -140,10 +148,10 @@
     become_method: sudo
 
 - hosts: localhost
-  
+
   vars_files:
     - ./vars.yml
-  
+
   tasks:
   - name: change munge folder as secure
     file:
@@ -215,7 +223,7 @@
     args:
       chdir: "/storage"
     with_items:
-           
+
             #- "wget https://download.schedmd.com/slurm/{{ slurm_version }}.tar.bz2"
             #- "sudo tar xvjf {{ slurm_version }}.tar.bz2"
        - "wget http://10.128.142.190:8081/artifactory/slurm_amd_plgn_package/amd-plugin-mike-wip-v1.tar.gz"
@@ -230,10 +238,10 @@
       chdir: "/storage/{{ slurm_version }}"
     with_items:
        - "make clean"
-       - "./configure --prefix=/tmp/slurm-build --sysconfdir=/etc/slurm --enable-pam --with-pam_dir=/lib/x86_64-linux-gnu/security/ --without-shared-libslurm --with-rsmi"
+       - "./configure --prefix=/tmp/slurm-build --sysconfdir=/etc/slurm --enable-pam --with-pam_dir=/lib/x86_64-linux-gnu/security/ --without-shared-libslurm"
        - "make"
        - "make contrib"
-       - "make install"
+       - "sudo make install"
     become: yes
     become_method: sudo
 
@@ -338,7 +346,7 @@
       dest: /etc/slurm/slurm.conf
       state: present
       regexp: '^#ControlAddr='
-      line: 'ControlAddr={{ ip }}'
+      line: 'ControlAddr={{ masterip }}'
     become: yes
     become_method: sudo
 
@@ -348,7 +356,7 @@
       state: present
       regexp: '^ControlMachine='
       line: 'ControlMachine={{ masterhostname }}'
-    become: yes 
+    become: yes
     become_method: sudo
 
   - name: Adding configuration
@@ -452,7 +460,7 @@
       insertbefore: '^PartitionName=debug State=UP PreemptMode=REQUEUE Priority=10000 Shared=FORCE:1'
     become: yes
     become_method: sudo
-  
+
   - name: Make sure "Uptime" not in slurm configuration
     lineinfile:
       path: /etc/slurm/slurm.conf
