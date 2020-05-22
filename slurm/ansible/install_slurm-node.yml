@@ -238,6 +238,7 @@
 #       chdir: "/storage/{{ slurm_version }}"
 #     with_items:
 #        - "make clean"
+#        - "autoreconf -i"
 #        - "./configure --prefix=/tmp/slurm-build --sysconfdir=/etc/slurm --enable-pam --with-pam_dir=/lib/x86_64-linux-gnu/security/ --without-shared-libslurm --with-rsmi_dir=/opt/rocm-3.5.0-2272/rocm_smi/"
 #        - "make"
 #        - "make contrib"

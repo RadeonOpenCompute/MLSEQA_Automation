@@ -10,4 +10,4 @@ slurm_mysql_password: slurmdbpass
 slurm_version: slurm-19.05.0
 slurm_pkg: amd-plugin-mike-wip-v1.tar.gz
 superuser: ansible
-tools: git,gcc,make,ruby,ruby-dev,libpam0g-dev,libmariadb-client-lgpl-dev,libmysqlclient-dev,rocm-smi-lib64,curl
+tools: git,gcc,make,ruby,ruby-dev,libpam0g-dev,libmariadb-client-lgpl-dev,libmysqlclient-dev,rocm-smi-lib64,autoreconf
