@@ -1,7 +1,9 @@
 ---
 
 - hosts: localhost
-
+  roles:
+    - kwoodson.yedit
+             
   vars_files:
     - ./vars.yml
 
@@ -33,16 +35,24 @@
     become_method: sudo
 
   - name: Test for line
-    shell: cat ./vars.yml | grep ip | wc -l
+    shell: cat ./vars.yml | grep masterip | wc -l
     register: test_grep
     become: yes
     become_method: sudo
 
+    #- name: add ip in vars.yml
+    #lineinfile:
+    #dest: ./vars.yml
+    #line: 'masterip: {{ ipinfo.stdout }}'
+    #when: test_grep.stdout == "0"
+    #become: yes
+    #become_method: sudo
+
   - name: add ip in vars.yml
-    lineinfile:
-      dest: ./vars.yml
-      line: 'ip: {{ ipinfo.stdout }}'
-    when: test_grep.stdout == "0"
+    yedit:
+      src: ./vars.yml
+      key: "masterip"
+      value: '{{ ipinfo.stdout }}'
     become: yes
     become_method: sudo
 
@@ -54,17 +64,17 @@
 
 
   - name: Test for line
-    shell: cat ./vars.yml | grep nodehostname | wc -l
+    shell: cat ./vars.yml | grep masterhostname | wc -l
     register: test_grep1
     become: yes
     become_method: sudo
 
 
   - name: add ip in vars.yml
-    lineinfile:
-      dest: ./vars.yml
-      line: 'nodehostname: {{ hostinfo.stdout }}'
-    when: test_grep1.stdout == "0"
+    yedit:
+      src: ./vars.yml
+      key: "masterhostname"
+      value: '{{ hostinfo.stdout }}'
     become: yes
     become_method: sudo
 
@@ -72,7 +82,7 @@
   - name: copy latest munge key to node folder
     copy:
       src: /etc/munge/munge.key
-      dest: /home/taccuser/MLSEQA_Automation/slurm/ansible/files/etc/munge/
+      dest: ./files/etc/munge/
       owner: "{{ superuser }}"
       group: "{{ superuser }}"
       mode: '0755'
