@@ -237,9 +237,8 @@
     args:
       chdir: "/storage/{{ slurm_version }}"
     with_items:
-            #- "make clean"i
-       - "autoreconf -i"
-       - "./configure --prefix=/tmp/slurm-build --sysconfdir=/etc/slurm --enable-pam --with-pam_dir=/lib/x86_64-linux-gnu/security/ --without-shared-libslurm "
+            #- "make clean"     
+       - "./configure --prefix=/tmp/slurm-build --sysconfdir=/etc/slurm --enable-pam --with-pam_dir=/lib/x86_64-linux-gnu/security/ --without-shared-libslurm --with-rsmi_dir=/opt/rocm-3.5.0-2272/rocm_smi/"
        - "make"
        - "make contrib"
        - "sudo make install"
@@ -266,15 +265,15 @@
     become_method: sudo
 
 
-    #- name: slurm initialization
-    #command: "{{ item }}"
-    #with_items:
-    #- "cp /storage/ubuntu-slurm/slurm.conf /etc/slurm/"
+  - name: slurm initialization
+    command: "{{ item }}"
+    with_items:
+       - "cp /storage/ubuntu-slurm/slurm.conf /etc/slurm/"
          #- "cp /storage/ubuntu-slurm/gres.conf /etc/slurm/gres.conf"
          #- "cp /storage/ubuntu-slurm/cgroup.conf /etc/slurm/cgroup.conf"
          #- "cp /storage/ubuntu-slurm/cgroup_allowed_devices_file.conf /etc/slurm/cgroup_allowed_devices_file.conf"
-         #become: yes
-         #become_method: sudo
+    become: yes
+    become_method: sudo
 
   - name: create storage directory
     command: bash -lc "mkdir -p "/var/spool/slurm/d""
@@ -360,23 +359,23 @@
     become: yes
     become_method: sudo
 
-    #- name: Adding configuration
-    #lineinfile:
-    #dest: /etc/slurm/slurm.conf
-    #state: present
-    #regexp: '^SelectType=select/cons_res'
-    #line: 'SelectType=select/cons_tres'
-    #become: yes
-    #become_method: sudo
+  - name: Adding configuration
+    lineinfile:
+      dest: /etc/slurm/slurm.conf
+      state: present
+      regexp: '^SelectType=select/cons_res'
+      line: 'SelectType=select/cons_tres'
+    become: yes
+    become_method: sudo
 
-    #- name: Adding configuration
-    #lineinfile:
-    #dest: /etc/slurm/slurm.conf
-    #state: present
-    #regexp: '^SelectTypeParameters=CR_Core_Memory,CR_CORE_DEFAULT_DIST_BLOCK,CR_ONE_TASK_PER_CORE'
-    #line: 'SelectTypeParameters=CR_Core_Memory,CR_CORE_DEFAULT_DIST_BLOCK,CR_ONE_TASK_PER_CORE'
-    #become: yes
-    #become_method: sudo
+  - name: Adding configuration
+    lineinfile:
+      dest: /etc/slurm/slurm.conf
+      state: present
+      regexp: '^SelectTypeParameters=CR_Core_Memory,CR_CORE_DEFAULT_DIST_BLOCK,CR_ONE_TASK_PER_CORE'
+      line: 'SelectTypeParameters=CR_Core_Memory,CR_CORE_DEFAULT_DIST_BLOCK,CR_ONE_TASK_PER_CORE'
+    become: yes
+    become_method: sudo
 
   - name: Adding configuration
     lineinfile:
@@ -404,15 +403,15 @@
     become: yes
     become_method: sudo
 
-    #- name: Adding configuration
-    #lineinfile:
-    #dest: /etc/slurm/slurm.conf
-    #state: present
-    #regexp: '^NodeName=linux1 Gres=gpu:8 CPUs=80 Sockets=2 CoresPerSocket=20 ThreadsPerCore=2 RealMemory=515896 State=UNKNOWN'
-    #line: "{{ nodeinfo.stdout }}"
-    #insertbefore: '^PartitionName=debug State=UP PreemptMode=REQUEUE Priority=10000 Shared=FORCE:1'
-    #become: yes
-    #become_method: sudo
+  - name: Adding configuration
+    lineinfile:
+      dest: /etc/slurm/slurm.conf
+      state: present
+      regexp: '^NodeName=linux1 Gres=gpu:8 CPUs=80 Sockets=2 CoresPerSocket=20 ThreadsPerCore=2 RealMemory=515896 State=UNKNOWN'
+      line: "{{ nodeinfo.stdout }}"
+      insertbefore: '^PartitionName=debug State=UP PreemptMode=REQUEUE Priority=10000 Shared=FORCE:1'
+    become: yes
+    become_method: sudo
 
   - name: Make sure "Uptime" not in slurm configuration
     lineinfile:
@@ -423,18 +422,18 @@
     become_method: sudo
 
 
-    #- name: download gres,cgroups conf files
-    #get_url:
-    #url: "http://10.128.142.190:8081/artifactory/slurm_amd_plgn_package/{{ item }}"
-    #dest: /etc/slurm/
-    #url_username: admin
-    #url_password: Admin@1234
-    #with_items:
-    #- "cgroup.conf"
-    #- "cgroup_allowed_devices_file.conf"
-    #- "gres.conf"
-    #become: yes
-    #become_method: sudo
+  - name: download gres,cgroups conf files
+    get_url:
+      url: "http://10.128.142.190:8081/artifactory/slurm_amd_plgn_package/{{ item }}"
+      dest: /etc/slurm/
+      url_username: admin
+      url_password: Admin@1234
+    with_items:
+       - "cgroup.conf"
+       - "cgroup_allowed_devices_file.conf"
+       - "gres.conf"
+    become: yes
+    become_method: sudo
 
   - name: start slurmd service
     service:
