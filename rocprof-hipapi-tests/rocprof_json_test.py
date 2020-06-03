@@ -8,11 +8,11 @@ from datetime import datetime
 import texttable as tt
 
 
-#output_file = "/home/taccuser/json_test_case_1/rocprof_hcc_trace_test_case_1.json"
+
 HOME = os.environ['HOME']
-#output_file = "/rocprof_hcc_trace_test_case_1/rocprof_hcc_trace_test_case_1.json"
 output_file = HOME + "/JSON_validate_file/result.json"
-output_path = HOME + "/rocprof-json-output"
+output_file = HOME + "/rocprof_pytorch_outfolder/rocprof_hcc_invalid_timemarking/rocprof_hcc_invalid_timemarking.json"
+#output_path = HOME + "/rocprof-json-output/"
 os.system("mkdir %s"%output_path)
 print("output_path :%s"%output_path)
 tab = tt.Texttable()
@@ -25,6 +25,7 @@ test_names = ["rocprof_json_validate_file_test_case_1",
         "rocprof_json_kernel_test_case_5",         
         "rocprof_json_stream_test_case_6"
         ]
+
 
 
 def rocprof_pid_checks(tstname,tstnum):    
@@ -70,13 +71,15 @@ def rocprof_pid_checks(tstname,tstnum):
         #print("Unexpected error:", sys.exc_info()[0])
         
 
-def rocprof_json_stream_checks():
+
+def rocprof_json_stream_checks(tstname, tstnum):
     logger.info('Entered test: rocprof_json_stream_test_case_6')
     try:
         #f = open(output_file,"r")
         #j = json.loads(f.read())
         #for i in j['traceEvents']:
             #print(i)
+        result = []
         with open(output_file, "r") as f:
             for line in f:
                 if 'stream' in line:
@@ -85,24 +88,31 @@ def rocprof_json_stream_checks():
                     #print(re.search('stream(((.*)))', line).group(1))
                     #str1 = str("nill")
                     if "nill" in m:
+                        result.append("Fail")
                         print("nill")   
                     else:
                         print("not nill")
                     #print(i)
-                    #print(i.get('args', {}).get('args'))                       
+                    #print(i.get('args', {}).get('args'))    
+        if "Fail" in result:
+            logger_fail(tstname, tstnum)
+        else:
+            logger_pass(tstname, tstnum)                   
    
     except:
         print("error in rocprof_stream_checks")
+        logger.error("error in rocprof_pid_checks")
 
 
-def rocprof_json_kernel_checks():
+
+def rocprof_json_kernel_checks(tstname,tstnum):
     logger.info('Entered test: rocprof_json_kernel_test_case_5')
-    print("kernel")
+    
     try:
         f = open(output_file,"r")
         j = json.loads(f.read())
         results = []
-        print("Kernel")
+        
         for i in j['traceEvents']:
             kernelname = i.get('name')
             #print(kernelname)            
@@ -120,6 +130,7 @@ def rocprof_json_kernel_checks():
 
     except:
         print("error in rocprof_kernel_checks")
+
 
 
 def rocprof_check_args(tstname,tstnum):
@@ -154,6 +165,7 @@ def rocprof_check_args(tstname,tstnum):
        logger.error("error in rocprof_check_args")
        logger.exception("error in rocprof_check_args")
 
+
          
 def load_defaults():
     global pt,tab,x,logger,start
@@ -164,13 +176,14 @@ def load_defaults():
             level=logging.DEBUG,
             format='%(asctime)s.%(msecs)03d :%(message)s',
             datefmt ='%Y-%m-%d %H:%M:%S',
-            filename = './rocprof_jsontest.log',
+            filename = output_path + 'rocprof_jsontest.log',
             filemode ='w'
     )
     pt = PrettyTable()
     pt.field_names = ["S.no","Test_name","Status"]
     pt.align["Test_name"] = "l"
     pt.align["Status"] = "l"
+
 
 
 def rocprof_json_file_validate(tstname,tstnum):
@@ -190,6 +203,7 @@ def rocprof_json_file_validate(tstname,tstnum):
         print("error in rocprof_json_file_validate")
         logger.error("error in rocprof_json_file_validate()")
         logger.exception("error in rocprof_json_file_validate()")
+
 
 
 def rocprof_json_function_validate():
@@ -212,6 +226,7 @@ def rocprof_json_function_validate():
                 print("Json_function_validate : Fail")
     except:
         print("error in rocprof_json_function_validate")
+
 
 
 def rocprof_json_time_parser(tstname,tstnum):
@@ -280,24 +295,6 @@ def rocprof_json_time_parser(tstname,tstnum):
         logger.exception("error in rocprof_json_time_parser()")
 
 
-#def load_defaults():
-    #global pt,tab,x,logger,start
-    #start=datetime.now()
-    #x = [[]]
-    #results=[]
-    #logger = logging.getLogger(__name__)
-    ##file_handler = logging.FileHandler('rdc_test.log')
-    #logging.basicConfig(
-            #level=logging.DEBUG,
-            #format='%(asctime)s.%(msecs)03d :%(message)s',
-            #datefmt ='%Y-%m-%d %H:%M:%S',
-            #filename = 'rocprof_jsontest.log',
-            #filemode ='w'
-    #)
-    #pt = PrettyTable()
-    #pt.field_names = ["S.no","Test_name","Status"]
-    #pt.align["Test_name"] = "l"
-    #pt.align["Status"] = "l"
 
 
 def logger_pass(test_string,testnum):
@@ -329,23 +326,6 @@ def logger_fail(test_string,testnum):
 
 
 
-#def load_defaults():
-    #global pt,tab,x
-    #pt = PrettyTable()
-    #pt.field_names = ["Test_name","Status"]
-    #pt.align["Test_name"] = "l"
-    #pt.align["Status"] = "l"
-    #x = [[]]
-    #results=[]
-    #logger = logging.getLogger(__name__)
-    ##file_handler = logging.FileHandler('rdc_test.log')
-    #logging.basicConfig(
-            #level=logging.DEBUG,
-            #format='%(asctime)s.%(msecs)03d :%(message)s',
-            #datefmt ='%Y-%m-%d %H:%M:%S',        
-            #filename = 'rdc_test.log',
-            #filemode ='w'
-
 
 def json_run_tests():
     logger.info('Started running JSON trace test cases')
@@ -363,12 +343,9 @@ def json_run_tests():
             elif tstname == "rocprof_json_pid_check_test_case_4":
                 rocprof_pid_checks(tstname,testnum)  
             elif tstname == "rocprof_json_kernel_test_case_5":
-                print("kernel start") 
                 rocprof_json_kernel_checks(tstname,testnum)
-                
-                print("Hello1")
-            #elif tstname == "rocprof_json_stream_test_case_6":
-                #rocprof_json_stream_checks(tstname,testnum)
+            elif tstname == "rocprof_json_stream_test_case_6":
+                rocprof_json_stream_checks(tstname,testnum)
                        
         tab.add_rows(x)
         tab.set_cols_align(['r','r','r'])
@@ -392,13 +369,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-
-
-#load_defaults()
-#rocprof_json_function_validate()
-#rocprof_json_file_validate()
-#rocprof_json_time_parser()
-#rocprof_check_args()
-#rocprof_pid_checks()
-#rocprof_kernel_checks()
-#rocprof_stream_checks()
