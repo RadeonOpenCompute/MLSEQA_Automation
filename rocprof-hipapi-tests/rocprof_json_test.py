@@ -21,8 +21,9 @@ results=[]
 test_names = ["rocprof_json_validate_file_test_case_1",
         "rocprof_json_validate_timestamp_test_case_2",
         "rocprof_json_args_check_test_case_3",
-        "rocprof_json_pid_check_test_case_4"
-        #"rocprof_json_kernel_stream_test_case_5"
+        "rocprof_json_pid_check_test_case_4",
+        "rocprof_json_kernel_test_case_5",         
+        "rocprof_json_stream_test_case_6"
         ]
 
 
@@ -37,7 +38,8 @@ def rocprof_pid_checks(tstname,tstnum):
             for line in f:                
                 if '"ph":"M"' in line:
                     print("found args")
-                    count = count + 1
+                    count = count + 1                   
+                    
         print(count)
         f = open(output_file,"r")       
         j = json.loads(f.read())
@@ -58,16 +60,18 @@ def rocprof_pid_checks(tstname,tstnum):
           i += 1                
         if "Fail" in result:
             logger_fail(tstname, tstnum)
-        else:
+        else:           
             logger_pass(tstname, tstnum)
 
     except:
         print("error in rocprof_pid_checks")
         logger.error("error in rocprof_pid_checks")
         logger.exception("error in rocprof_pid_checks")
+        #print("Unexpected error:", sys.exc_info()[0])
+        
 
-
-def rocprof_stream_checks():
+def rocprof_json_stream_checks():
+    logger.info('Entered test: rocprof_json_stream_test_case_6')
     try:
         #f = open(output_file,"r")
         #j = json.loads(f.read())
@@ -91,17 +95,29 @@ def rocprof_stream_checks():
         print("error in rocprof_stream_checks")
 
 
-def rocprof_kernel_checks():
+def rocprof_json_kernel_checks():
+    logger.info('Entered test: rocprof_json_kernel_test_case_5')
+    print("kernel")
     try:
         f = open(output_file,"r")
         j = json.loads(f.read())
+        results = []
+        print("Kernel")
         for i in j['traceEvents']:
             kernelname = i.get('name')
-            #print(kernelname)
+            #print(kernelname)            
             if kernelname == "hipModuleLaunchKernel":
-                print(kernelname)
+                #print(kernelname)                
                 print(i.get('args', {}).get('args'))
-               
+                if (i.get('args', {}).get('args')) == "Null":
+                    results.append("Fail")
+                else:
+                    results.append("Pass")
+        if "Fail" in results:
+            logger_fail(tstname,tstnum)      
+        else:
+            logger_pass(tstname,tstnum)
+
     except:
         print("error in rocprof_kernel_checks")
 
@@ -264,31 +280,31 @@ def rocprof_json_time_parser(tstname,tstnum):
         logger.exception("error in rocprof_json_time_parser()")
 
 
-def load_defaults():
-    global pt,tab,x,logger,start
-    start=datetime.now()
-    x = [[]]
-    results=[]
-    logger = logging.getLogger(__name__)
-    #file_handler = logging.FileHandler('rdc_test.log')
-    logging.basicConfig(
-            level=logging.DEBUG,
-            format='%(asctime)s.%(msecs)03d :%(message)s',
-            datefmt ='%Y-%m-%d %H:%M:%S',
-            filename = 'rocprof_jsontest.log',
-            filemode ='w'
-    )
-    pt = PrettyTable()
-    pt.field_names = ["S.no","Test_name","Status"]
-    pt.align["Test_name"] = "l"
-    pt.align["Status"] = "l"
+#def load_defaults():
+    #global pt,tab,x,logger,start
+    #start=datetime.now()
+    #x = [[]]
+    #results=[]
+    #logger = logging.getLogger(__name__)
+    ##file_handler = logging.FileHandler('rdc_test.log')
+    #logging.basicConfig(
+            #level=logging.DEBUG,
+            #format='%(asctime)s.%(msecs)03d :%(message)s',
+            #datefmt ='%Y-%m-%d %H:%M:%S',
+            #filename = 'rocprof_jsontest.log',
+            #filemode ='w'
+    #)
+    #pt = PrettyTable()
+    #pt.field_names = ["S.no","Test_name","Status"]
+    #pt.align["Test_name"] = "l"
+    #pt.align["Status"] = "l"
 
 
 def logger_pass(test_string,testnum):
     global x,pt
     try:        
         pt.add_row([testnum,test_string,"PASS"])
-        logger.error('Run Test : %s'%test_string)
+        logger.info('Run Test : %s'%test_string)
         #logger.error('Run Command : %s'%command)
         logger.info('Test: %s is Passed'%test_string)
         x.append([testnum,test_string,"PASS"])
@@ -302,7 +318,7 @@ def logger_fail(test_string,testnum):
     
     try:        
         pt.add_row([testnum,test_string,"FAIL"])
-        logger.error('Run Test : %s'%test_string)
+        logger.info('Run Test : %s'%test_string)
         #logger.error('Run Command : %s'%command)
         logger.info('Test: %s is Failed'%test_string)
         logger.info('\n')
@@ -346,9 +362,14 @@ def json_run_tests():
                 rocprof_check_args(tstname,testnum)   
             elif tstname == "rocprof_json_pid_check_test_case_4":
                 rocprof_pid_checks(tstname,testnum)  
-            #elif tstname == "rocprof_json_kernel_stream_test_case_5":
-                #rocprof_kernel_checks(tstname,testnum)
-                #rocprof_stream_checks(tstname,testnum)              
+            elif tstname == "rocprof_json_kernel_test_case_5":
+                print("kernel start") 
+                rocprof_json_kernel_checks(tstname,testnum)
+                
+                print("Hello1")
+            #elif tstname == "rocprof_json_stream_test_case_6":
+                #rocprof_json_stream_checks(tstname,testnum)
+                       
         tab.add_rows(x)
         tab.set_cols_align(['r','r','r'])
         tab.header(['S.no', 'JSON-TestCases', 'Result'])
