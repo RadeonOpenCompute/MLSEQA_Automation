@@ -14,11 +14,11 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 
-
+fqdn = ""
 HOME = os.environ['HOME']
 grpid = 0
 fgrpid = 0
-rdcpath =  "/home/master/rdc/build/"
+rdcpath =  "/home/taccuser/rdc/build/"
 tab = tt.Texttable()
 x = [[]]
 results=[]
@@ -50,8 +50,22 @@ test_names = ["rdc_service_start_test_1",
         #"rdc_monitor_telemetry_test_16",
         "rdc_delete_gpu_group_test_16",
         "rdc_connect_with_auth_test_17",
-        "rdc_connect_without_auth_test_18"
+        "rdc_connect_without_auth_test_18",
+        "rdc_check_supported_field_IDs_test_19"
         ]
+
+
+def fetch_fqdn():
+    global fqdn
+    try:
+        res = execute_remotely("10.130.166.205","taccuser","AH64_uh1","nslookup 10.130.166.205")
+        
+        out = res.decode('utf-8')
+        for item in out.split("\n"):
+            if "name" in item:
+                fqdn = item.split("=")[1].strip().replace("com.", "com")
+    except:
+        print("error in fetch_fqdn")
 
 
 
@@ -73,6 +87,33 @@ def rdc_service_start(tstname,cmnd,test_string,tstnum):
     except:
         logger.error("error in rdc_service_start")
         logger.exception("error in rdc_service_start")
+
+
+def rdc_check_field_IDs(tstname,cmnd,test_string,tstnum):
+    logger.info('Entered test: rdc_check_field_IDs_test')
+    result = []
+    try:
+        res = os.popen("%s"%cmnd).read()
+        if not "Supported fields Ids:" in res:
+            result.append("Fail")
+        elif "Supported fields Ids:" in res:
+            aList = ['100', '101', '140', '150', '155', '200', '201', '203', '312', '313', '525']
+            for i in aList:
+                if i in res:
+                    result.append("Pass")
+                else:
+                    result.append("Fail")
+
+
+        if "Fail" in result:
+            logger_fail(tstname, cmnd, tstnum)
+        else:
+            logger_pass(tstname, cmnd, tstnum)
+    except:
+        logger.error("error in rdc_check_field_IDs")
+        logger.exception("error in rdc_check_field_IDs")
+                    
+        
 
 
 def rdc_client_tests(tstname,cmnd,test_string,tstnum):
@@ -128,7 +169,7 @@ def rdc_remote_execution(tstname,cmnd,test_string,testnum):
     try:
         print("rdc_discover_gpu")        
         print(cmnd)        
-        res = execute_remotely("%s"%sys.argv[1],"master","AH64_uh1",cmnd)
+        res = execute_remotely("%s"%sys.argv[1],"taccuser","AH64_uh1",cmnd)
         print(res)
         logger.info('Result: %s'%res)
         # re.findall returns a list of matches
@@ -172,71 +213,76 @@ def rdc_run_tests():
             #command = test_commands[tstname]
             if tstname == "rdc_service_start_test_1":                
                 test_string = "Accepting Unauthenticated connections"
-                command = "cd %s && sudo LD_LIBRARY_PATH=$PWD/rdc_libs/ ./server/rdcd -u"%rdcpath                
+                command = "cd %s && ./server/rdcd"%rdcpath                
                 rdc_remote_execution(tstname,command,test_string,testnum)
             elif tstname == "rdc_discover_gpu_test_4":
+                fetch_fqdn()
                 test_string = "GPU Index"
-                command = "rdci discovery --host %s:50051 -u -l"%sys.argv[1]                
+                command = "rdci discovery --host %s:50051 -l"%fqdn           
                 rdc_client_tests(tstname,command,test_string,testnum)
             elif tstname == "rdc_create_gpu_group_test_5":
                 test_string = "Successfully created group"
-                command = "rdci group -c GPU_GROUP --host %s:50051 -u"%sys.argv[1]                
+                command = "rdci group -c GPU_GROUP --host %s:50051"%fqdn                
                 rdc_client_tests(tstname,command,test_string,testnum)
             elif tstname == "rdc_list_gpu_group_test_6":
                 test_string = "group found"
-                command = "rdci group --host %s:50051 -u -l"%sys.argv[1]                
+                command = "rdci group --host %s:50051 -l"%fqdn             
                 rdc_client_tests(tstname,command,test_string,testnum)            
             elif tstname == "rdc_attach_gpu_to_group_test_7":
                 test_string = "Successfully added the GPU"
-                command = "rdci group -g %s -a 0 --host %s:50051 -u"%(grpid,sys.argv[1])                
+                command = "rdci group -g %s -a 0 --host %s:50051"%(grpid,fqdn)                
                 rdc_client_tests(tstname,command,test_string,testnum)          
             elif tstname == "rdc_stats_job_create_test_8":
                 test_string = "Successfully started recording job"
-                command = "rdci stats --host %s:50051 -u -g %s -s 123"%(sys.argv[1],grpid)                
+                command = "rdci stats --host %s:50051 -g %s -s 123"%(fqdn,grpid)                
                 rdc_client_tests(tstname,command,test_string,testnum)
             elif tstname == "rdc_stats_job_stop_test_9":
                 test_string = "Successfully stopped recording job"
-                command = "rdci stats --host %s:50051 -u -g %s -x 123"%(sys.argv[1],grpid)
+                command = "rdci stats --host %s:50051 -g %s -x 123"%(fqdn,grpid)
                 rdc_client_tests(tstname,command,test_string,testnum)
             elif tstname == "rdc_stats_show_summary_test_10":
                 test_string = "Execution Stats"
-                command = "rdci  stats --host %s:50051 -u -j 123"%sys.argv[1]                
+                command = "rdci  stats --host %s:50051 -j 123"%fqdn                
                 rdc_client_tests(tstname,command,test_string,testnum)
             elif tstname == "rdc_fieldgroup_create_test_11":
                 test_string = "Successfully created a field group"
-                command = "rdci fieldgroup --host %s:50051 -u -c mg -f 50"%sys.argv[1]                
+                command = "rdci fieldgroup --host %s:50051 -c mg -f 50"%fqdn                
                 rdc_client_tests(tstname,command,test_string,testnum)
             elif tstname == "rdc_fieldgroup_list_test_12":
                 test_string = "field group found"
-                command = "rdci fieldgroup --host %s:50051 -u -l"%sys.argv[1]
+                command = "rdci fieldgroup --host %s:50051 -l"%fqdn
                 rdc_client_tests(tstname,command,test_string,testnum)
             elif tstname == "rdc_fieldgroup_viewinfo_test_13":
                 test_string = "Field Ids"
-                command = "rdci fieldgroup --host %s:50051 -u -g %s -i"%(sys.argv[1],fgrpid)                
+                command = "rdci fieldgroup --host %s:50051 -g %s -i"%(fqdn,fgrpid)                
                 rdc_client_tests(tstname,command,test_string,testnum)
             elif tstname == "rdc_monitor_telemetry_test_14":
                 test_string = "TEMP"
-                command = "rdci dmon --host %s:50051 -u -e 50 -i 0 -c 5 -d 1000"%sys.argv[1]            
+                command = "rdci dmon --host %s:50051 -e 50 -i 0 -c 5 -d 1000"%fqdn            
                 rdc_client_tests(tstname,command,test_string,testnum)
             elif tstname == "rdc_fieldgroup_delete_test_15":
                 test_string = "Successfully deleted the field group"
-                command = "rdci fieldgroup --host %s:50051 -u -d %s"%(sys.argv[1],fgrpid)                
+                command = "rdci fieldgroup --host %s:50051 -d %s"%(fqdn,fgrpid)                
                 rdc_client_tests(tstname,command,test_string,testnum)
             elif tstname == "rdc_delete_gpu_group_test_16":
                 test_string = "Successfully deleted the group"
-                command = "rdci group -d %s --host %s:50051 -u"%(grpid,sys.argv[1])                
+                command = "rdci group -d %s --host %s:50051"%(grpid,fqdn)                
                 rdc_client_tests(tstname,command,test_string,testnum)
             #elif tstname == "rdc_monitor_telemetry_test_16":
                 #test_string = "TEMP"
                 #rdc_client_tests(tstname,command,test_string,testnum)
             elif tstname == "rdc_connect_with_auth_test_17":
                 test_string = "GPUs found"
-                command = "rdci discovery --host %s:50051 -l"%sys.argv[1]                
+                command = "rdci discovery --host %s:50051 -l"%fqdn                
                 rdc_client_tests(tstname,command,test_string,testnum)
             elif tstname == "rdc_connect_without_auth_test_18":
                 test_string = "GPUs found"
-                command = "rdci discovery --host %s:50051 -u -l"%sys.argv[1]                
+                command = "rdci discovery --host %s:50051 -l"%fqdn
                 rdc_client_tests(tstname,command,test_string,testnum)
+            elif tstname == "rdc_check_supported_field_IDs_test_19":
+                test_string = "Supported fields Ids:"
+                command = "rdci dmon --host %s:50051 -l"%fqdn
+                rdc_check_field_IDs(tstname,command,test_string,testnum)
         
         
         tab.add_rows(x)
@@ -307,11 +353,12 @@ def summary_result():
     z.add_row([len(results), len(totpass), len(totfail)])
     print(z)
 
+
 def main():
     start = datetime.now()
     logging.info("starting test suite")
     load_defaults()
-    rdc_run_tests()
+    rdc_run_tests()        
     end = datetime.now()-start
     endtime = end.total_seconds() / 60
 
