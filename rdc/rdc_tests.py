@@ -14,6 +14,8 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 
+
+fieldList = ['100', '101', '140', '150', '155', '200', '201', '203', '312', '313', '525']
 fqdn = ""
 HOME = os.environ['HOME']
 grpid = 0
@@ -51,7 +53,8 @@ test_names = ["rdc_service_start_test_1",
         "rdc_delete_gpu_group_test_16",
         "rdc_connect_with_auth_test_17",
         "rdc_connect_without_auth_test_18",
-        "rdc_check_supported_field_IDs_test_19"
+        "rdc_check_supported_field_IDs_test_19",
+        "rdc_monitor_device_with_field_IDs_test_20"
         ]
 
 
@@ -67,6 +70,32 @@ def fetch_fqdn():
     except:
         print("error in fetch_fqdn")
 
+
+def rdc_monitor_device_with_field_IDs(tstname,tstnum):
+    logger.info('Entered test: %s'%tstname)
+    result = []
+    try:        
+        for i in fieldList:
+            cmnd = "rdci dmon --host playground.amd.com:50051 -e %s -i 1 -c 5 -d 1000 -d 1"%i
+            res = os.popen("%s"%cmnd).read()
+            print(res)
+            count = len(res.split('\n')) - 2
+            if count == 5:
+                result.append("Pass")
+            elif count < 5:
+                result.append("Fail")
+        if "Fail" in result:
+            print(tstname + ": Failed")
+            logger_fail(tstname, cmnd, tstnum)
+        elif len(result) == 0:
+            print(tstname + ": Failed")
+            logger_fail(tstname, cmnd, tstnum)
+        else:
+            print(tstname + ": Passed")
+            logger_pass(tstname, cmnd, tstnum)
+    except:
+        logger.error("error in %s"%tstname)
+        logger.exception("error in %s"%tstname)
 
 
 def rdc_service_start(tstname,cmnd,test_string,tstnum):
@@ -97,14 +126,12 @@ def rdc_check_field_IDs(tstname,cmnd,test_string,tstnum):
         if not "Supported fields Ids:" in res:
             result.append("Fail")
         elif "Supported fields Ids:" in res:
-            aList = ['100', '101', '140', '150', '155', '200', '201', '203', '312', '313', '525']
-            for i in aList:
+            fieldList = ['100', '101', '140', '150', '155', '200', '201', '203', '312', '313', '525']
+            for i in fieldList:
                 if i in res:
                     result.append("Pass")
                 else:
                     result.append("Fail")
-
-
         if "Fail" in result:
             logger_fail(tstname, cmnd, tstnum)
         else:
@@ -283,8 +310,10 @@ def rdc_run_tests():
                 test_string = "Supported fields Ids:"
                 command = "rdci dmon --host %s:50051 -l"%fqdn
                 rdc_check_field_IDs(tstname,command,test_string,testnum)
+            elif tstname == "rdc_monitor_device_with_field_IDs_test_20":
+                rdc_monitor_device_with_field_IDs(tstname,testnum)
         
-        
+
         tab.add_rows(x)
         tab.set_cols_align(['r','r','r'])
         tab.header(['S.no', 'RDC-TestCases', 'Result'])
@@ -358,7 +387,8 @@ def main():
     start = datetime.now()
     logging.info("starting test suite")
     load_defaults()
-    rdc_run_tests()        
+    #rdc_run_tests()
+    rdc_monitor_device_with_field_IDs()
     end = datetime.now()-start
     endtime = end.total_seconds() / 60
 
